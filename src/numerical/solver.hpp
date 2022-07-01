@@ -38,6 +38,15 @@ class Solver
         double dG1dt();
         double dG2dt();
         double dG1G2dt();
+
+        // fecundity function
+        double b(PopTypes const idx);
+
+        // solver for the eigenvectors
+        void eigenvectors();
+        
+        void solve_endemic_eq();
+        double selgrad_pi();
 };
 
 
