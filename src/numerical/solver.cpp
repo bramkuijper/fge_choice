@@ -222,6 +222,11 @@ void Solver::eigenvectors()
     std::cout << es.eigenvalues().real() << std::endl;
     Eigen::VectorXd eivals = es.eigenvalues().real();
 
+    for (auto x : eivals)
+    {
+        std::cout << x << std::endl;
+    }
+
     // find out
 
 
