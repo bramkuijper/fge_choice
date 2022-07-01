@@ -26,6 +26,15 @@ class Solver
         // population sizes of S, G1, G2 and G1G2
         double popsizes[4] = {0.0,0.0,0.0,0.0};
 
+        // the stable class frequencies, normalized
+        double u[4] = {0.0,0.0,0.0,0.0};
+
+        // the reproductive values, normalized so that
+        // u^T.v = 1
+        double v[4] = {0.0,0.0,0.0,0.0};
+
+        double eigenval = 0.0;
+
         unsigned long time_step = 0;
 
         void write_data_headers();
@@ -41,6 +50,7 @@ class Solver
 
         // fecundity function
         double b(PopTypes const idx);
+        double dbdpi(PopTypes const idx);
 
         // solver for the eigenvectors
         void eigenvectors();

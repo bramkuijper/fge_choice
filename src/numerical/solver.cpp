@@ -2,6 +2,7 @@
 #include <fstream>
 #include <cmath>
 #include <Eigen/Dense>
+#include <stdexcept>
 #include "parameters.hpp"
 #include "solver.hpp"
 
@@ -22,9 +23,6 @@ Solver::Solver(Parameters const &params) : // data member initializers
 
     eigenvectors();
 
-    exit(1);
-
-
     double pi_tplus1 = 0.0;
 
     for (time_step = 0; 
@@ -32,6 +30,8 @@ Solver::Solver(Parameters const &params) : // data member initializers
     {
         // solve for the ecological equilibrium
         solve_endemic_eq();
+
+        eigenvectors();
 
         // update the value of pi
         pi_tplus1 = std::clamp(
@@ -57,10 +57,40 @@ Solver::Solver(Parameters const &params) : // data member initializers
     write_parameters();
 } // end Solver::Solver(Parameters const &params) :
 
-
+// calculate the selection gradient acting on resistance
 double Solver::selgrad_pi()
 {
-    return(0.0);
+    double a[4][4] = {{0,0,0,0},
+        {0,0,0,0},
+        {0,0,0,0},
+        {0,0,0,0}};
+
+    a[S_idx][S_idx] = dbdpi(S_idx) + par.psi[G1_idx] + par.psi[G2_idx];
+    a[G1_idx][S_idx] = -par.psi[G1_idx];
+    a[G1_idx][G1_idx] = dbdpi(G1_idx) + par.sigma * par.psi[G2_idx];
+    a[G2_idx][S_idx] = -par.psi[G2_idx];
+    a[G2_idx][G2_idx] = dbdpi(G2_idx) + par.sigma * par.psi[G1_idx];
+    a[G1G2_idx][G1_idx] = -par.sigma * par.psi[G2_idx];
+    a[G1G2_idx][G2_idx] = -par.sigma * par.psi[G1_idx];
+    a[G1G2_idx][G1G2_idx] = dbdpi(G1G2_idx);
+
+    double selgrad = 0.0;
+
+    for (int col_idx = 0; col_idx < 4; ++col_idx)
+    {
+        for (int row_idx = 0; row_idx < 4; ++row_idx)
+        {
+            selgrad += u[col_idx] * v[row_idx] * a[row_idx][col_idx];
+        }
+    }
+
+    return(selgrad);
+}
+
+// derivative of the fecundity function
+double Solver::dbdpi(PopTypes const type)
+{
+    return(-par.c * b(type));
 }
 
 // solve for the endemic equilibrium
@@ -88,6 +118,17 @@ void Solver::solve_endemic_eq()
 
         for (int idx = 0; idx < 4; ++idx)
         {
+            if (!std::isfinite(popsizes_tplus1[idx]))
+            {
+                std::stringstream msg;
+
+                msg <<  "out of range for idx " << idx
+                 << " at time step " << ecol_time << std::endl;
+
+                throw std::range_error(msg.str());
+            }
+
+
             // set limit to the population size;
             if (popsizes_tplus1[idx] < 0.0)
             {
@@ -217,22 +258,70 @@ void Solver::eigenvectors()
         (par.d[G1G2_idx] + par.gamma[G1_idx] + par.gamma[G2_idx]);
 
     // now make a solver object to get at the eigenvectors
+    //
+    // first the class frequencies
     Eigen::EigenSolver<Eigen::MatrixXd> es(m);
 
-    std::cout << es.eigenvalues().real() << std::endl;
-    Eigen::VectorXd eivals = es.eigenvalues().real();
+    // then the reproductive values
+    Eigen::EigenSolver<Eigen::MatrixXd> es_t(m.transpose());
 
-    for (auto x : eivals)
+    // get eigenvalues 
+    Eigen::VectorXd eivals = es.eigenvalues().real();
+    Eigen::VectorXd eivals_t = es_t.eigenvalues().real();
+
+
+    double max_eival = eivals[0];
+    double max_eival_t = eivals_t[0];
+
+    int dominant_eigenval_idx = 0;
+    int dominant_eigenval_t_idx = 0;
+
+    for (int i = 1; i < eivals.size(); ++i)
     {
-        std::cout << x << std::endl;
+        // first find dominant ev of 
+        // the normal matrix
+        if (max_eival < eivals[i])
+        {
+            dominant_eigenval_idx = i;
+
+            max_eival = eivals[i];
+        }
+
+        // then find the dominant ev 
+        // of the transposed one 
+        // (why they have different orderings dunno, but they are)
+        if (max_eival_t < eivals_t[i])
+        {
+            dominant_eigenval_t_idx = i;
+            max_eival_t = eivals_t[i];
+        }
     }
 
-    // find out
+    // update the eigenvalue
+    eigenval = max_eival;
 
+    double sum_u = 0.0;
+    double sum_uv = 0.0;
 
-    std::cout << es.eigenvectors().col(0) <<  std::endl;
+    for (int i = 0; i < 4; ++i)
+    {
+        u[i] = es.eigenvectors().col(
+                dominant_eigenval_idx)[i].real();
 
-    
+        sum_u += u[i];
+
+        v[i] = es_t.eigenvectors().col(
+                dominant_eigenval_t_idx)[i].real();
+
+        sum_uv += u[i] * v[i];
+    }
+
+    for (int i = 0; i < 4; ++i)
+    {
+        v[i] = v[i] * u[i] / sum_uv;
+
+        u[i] /= sum_u;
+    }
 } // end Solver::eigenvectors()
 
 

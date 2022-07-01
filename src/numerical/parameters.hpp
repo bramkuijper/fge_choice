@@ -21,7 +21,7 @@ class Parameters
         double kappa = 0.01;
 
         // gamma_G1, gamma_G2: plasmid loss rates
-        double gamma[4] = {0.0,3.0,8.0,0.0};
+        double gamma[4] = {0.0,3.0,200.0,0.0};
 
         // psi_G1, psi_G2: plasmid infection strengths
         double psi[4] = {0.0,10.0,99.0,0.0};
