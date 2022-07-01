@@ -165,6 +165,7 @@ double Solver::b(PopTypes const idx)
     return(par.F[idx] * par.bmax * exp(-par.c * pi));
 }
 
+// eigenvector calculations
 void Solver::eigenvectors()
 {
     // dimensions of the matrix as follows: 
@@ -215,7 +216,18 @@ void Solver::eigenvectors()
     m(G1G2_idx, G1G2_idx) = b(G1G2_idx) - 
         (par.d[G1G2_idx] + par.gamma[G1_idx] + par.gamma[G2_idx]);
 
-    std::cout << m << std::endl;
+    // now make a solver object to get at the eigenvectors
+    Eigen::EigenSolver<Eigen::MatrixXd> es(m);
+
+    std::cout << es.eigenvalues().real() << std::endl;
+    Eigen::VectorXd eivals = es.eigenvalues().real();
+
+    // find out
+
+
+    std::cout << es.eigenvectors().col(0) <<  std::endl;
+
+    
 } // end Solver::eigenvectors()
 
 

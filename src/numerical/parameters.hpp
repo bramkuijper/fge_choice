@@ -9,7 +9,7 @@ class Parameters
     public:
         // constants of the fecundity function
         // bm, bG1m, bG2m, bG1G2m
-        double F[4] = {1.0,0.0,0.0,0.0};
+        double F[4] = {1.0,2.0,3.0,4.0};
 
         double bmax = 50.0;
         
