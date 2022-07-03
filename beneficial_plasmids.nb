@@ -10,22 +10,101 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[      1155,         40]
-NotebookOptionsPosition[       742,         25]
-NotebookOutlinePosition[      1203,         42]
-CellTagsIndexPosition[      1160,         39]
+NotebookDataLength[      4079,        128]
+NotebookOptionsPosition[      3145,        104]
+NotebookOutlinePosition[      3598,        121]
+CellTagsIndexPosition[      3555,        118]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
 Notebook[{
-Cell["Preferences for Beneficial Plasmids", "Section",
- CellChangeTimes->{{3.865599229658243*^9, 
-  3.865599261259636*^9}},ExpressionUUID->"5b341083-6e34-43f3-9a76-\
-eb0bd7753e54"]
+
+Cell[CellGroupData[{
+Cell["Dynamics", "Section",
+ CellChangeTimes->{{3.865599229658243*^9, 3.865599261259636*^9}, {
+  3.865784268901841*^9, 
+  3.865784273269417*^9}},ExpressionUUID->"5b341083-6e34-43f3-9a76-\
+eb0bd7753e54"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"dSdt", "=", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"b", "[", "S", "]"}], 
+     RowBox[{"(", 
+      RowBox[{"1", "-", 
+       RowBox[{"\[Kappa]", " ", "\[ScriptCapitalN]"}]}], ")"}], "S"}], "+", 
+    RowBox[{
+     RowBox[{"\[Gamma]", "[", "G1", "]"}], "IG1"}], "+", 
+    RowBox[{
+     RowBox[{"\[Gamma]", "[", "G2", "]"}], "IG2"}], "-", 
+    RowBox[{
+     RowBox[{"(", 
+      RowBox[{"d", "+", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{"1", "-", 
+          RowBox[{"pi", "[", "G1", "]"}]}], ")"}], 
+        RowBox[{"\[Psi]", "[", "G1", "]"}]}], "+", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{"1", "-", 
+          RowBox[{"pi", "[", "G2", "]"}]}], ")"}], 
+        RowBox[{"\[Psi]", "[", "G2", "]"}]}]}], ")"}], "S"}]}]}], 
+  ";"}]], "Input",
+ CellChangeTimes->{{3.865784280344784*^9, 3.865784298420766*^9}, {
+  3.865784338428931*^9, 3.865784365663249*^9}, {3.865785080330268*^9, 
+  3.8657850908572397`*^9}, {3.865785374185645*^9, 3.865785375482524*^9}, {
+  3.865785411337893*^9, 3.865785455198675*^9}},
+ CellLabel->"In[5]:=",ExpressionUUID->"a514741d-dc4e-483b-b025-ea436fbb710d"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Invasion analysis", "Section",
+ CellChangeTimes->{{3.86578437507124*^9, 
+  3.865784377087419*^9}},ExpressionUUID->"f16d5bfc-cdab-4b13-92c9-\
+2b824eac89b6"],
+
+Cell[TextData[{
+ "Fecundity function is ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"b", ":=", 
+    RowBox[{
+     SubscriptBox["F", "i"], 
+     SubscriptBox["b", "max"], 
+     RowBox[{"Exp", "[", 
+      RowBox[{
+       RowBox[{"-", "c"}], " ", "pi"}], "]"}]}]}], TraditionalForm]],
+  FormatType->TraditionalForm,ExpressionUUID->
+  "57ee7ed8-5572-4925-9d5f-89fbf482cb65"]
+}], "Text",
+ CellChangeTimes->{{3.865784394223795*^9, 
+  3.8657844695622807`*^9}},ExpressionUUID->"e8a0e54f-d3dc-4711-a213-\
+67121ee718f2"],
+
+Cell["Mutant fecundity matrix", "Text",
+ CellChangeTimes->{{3.865784485694941*^9, 
+  3.865784494999543*^9}},ExpressionUUID->"60f76a11-7327-4fd8-b3f7-\
+d8b57e2543b8"],
+
+Cell[BoxData[
+ RowBox[{"Bm", "=", 
+  RowBox[{"{", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"bm", "[", "S", "]"}], ","}], "}"}], "}"}]}]], "Input",
+ CellChangeTimes->{{3.865784379834392*^9, 3.865784385311063*^9}, {
+  3.8657844756492434`*^9, 
+  3.86578449895172*^9}},ExpressionUUID->"0636a91b-1541-4cce-a8a9-\
+9d4856bca799"]
+}, Open  ]]
 },
 WindowSize->{571.8139534883721, 689.8604651162791},
-WindowMargins->{{335.72093023255815`, Automatic}, {162.4186046511628, 
-  30.97674418604651}},
+WindowMargins->{{108.00000000000001`, Automatic}, {
+  Automatic, 87.90697674418605}},
 FrontEndVersion->"13.1 for Linux x86 (64-bit) (June 16, 2022)",
 StyleDefinitions->"Default.nb",
 ExpressionUUID->"0ce7d367-07e0-4af8-9b9f-537756d6d116"
@@ -41,10 +120,17 @@ CellTagsIndex->{}
 *)
 (*NotebookFileOutline
 Notebook[{
-Cell[558, 20, 180, 3, 68, "Section",ExpressionUUID->"5b341083-6e34-43f3-9a76-eb0bd7753e54"]
+Cell[CellGroupData[{
+Cell[580, 22, 202, 4, 68, "Section",ExpressionUUID->"5b341083-6e34-43f3-9a76-eb0bd7753e54"],
+Cell[785, 28, 1141, 31, 109, "Input",ExpressionUUID->"a514741d-dc4e-483b-b025-ea436fbb710d"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[1963, 64, 161, 3, 68, "Section",ExpressionUUID->"f16d5bfc-cdab-4b13-92c9-2b824eac89b6"],
+Cell[2127, 69, 506, 16, 39, "Text",ExpressionUUID->"e8a0e54f-d3dc-4711-a213-67121ee718f2"],
+Cell[2636, 87, 165, 3, 35, "Text",ExpressionUUID->"60f76a11-7327-4fd8-b3f7-d8b57e2543b8"],
+Cell[2804, 92, 325, 9, 29, "Input",ExpressionUUID->"0636a91b-1541-4cce-a8a9-9d4856bca799"]
+}, Open  ]]
 }
 ]
 *)
-
-(* End of internal cache information *)
 

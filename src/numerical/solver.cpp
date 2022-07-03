@@ -116,6 +116,11 @@ void Solver::solve_endemic_eq()
         popsizes_tplus1[G1G2_idx] = popsizes[G1G2_idx] + 
             par.eul * dG1G2dt();
 
+        // reset N
+        N = 0;
+
+        converged = true;
+
         for (int idx = 0; idx < 4; ++idx)
         {
             if (!std::isfinite(popsizes_tplus1[idx]))
@@ -143,19 +148,21 @@ void Solver::solve_endemic_eq()
             }
 
             popsizes[idx] = popsizes_tplus1[idx];
+
+            N += popsizes[idx];
         }
 
         if (converged)
         {
             break;
         }
-    }
+    }  // end for (long unsigned int ecol_time 
 } // end  solve_endemic_eq()
 
 // write the headers to the data file
 void Solver::write_data_headers()
 {
-    data_file << "time_step;S;G1;G2;G1G2;N;pi;" << std::endl;
+    data_file << "time_step;S;G1;G2;G1G2;uS;uG1;uG2;uG1G2;vS;vG1;vG2;vG1G2;N;pi;" << std::endl;
 } // end write_data_headers
 
 void Solver::write_data()
@@ -165,6 +172,14 @@ void Solver::write_data()
         << popsizes[G1_idx] << ";"
         << popsizes[G2_idx] << ";"
         << popsizes[G1G2_idx] << ";"
+        << u[0] << ";"
+        << u[1] << ";"
+        << u[2] << ";"
+        << u[3] << ";"
+        << v[0] << ";"
+        << v[1] << ";"
+        << v[2] << ";"
+        << v[3] << ";"
         << N << ";"
         << pi << ";" << std::endl;
 } // write_data()

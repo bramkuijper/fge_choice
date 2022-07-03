@@ -40,7 +40,7 @@ class Parameters
 
         std::string base_name = {"sim_plasmid_choice"};
 
-        unsigned output_time_interval = 10;
+        unsigned output_time_interval = 1;
 
         long unsigned max_time = 1e06;
         long unsigned max_time_ecology = 1e06;
@@ -50,7 +50,7 @@ class Parameters
         double convergence_boundary = 1e-06;
 
         // Euler's constant
-        double eul = 0.01;
+        double eul = 0.0001;
 
 };
 
