@@ -1,0 +1,63 @@
+---
+title: "Preferences for foreign genetic elements"
+author: "Bram Kuijper"
+date: '2022-07-02'
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## The evolution of preferences for beneficial FGE elements
+
+We have the following set of differential equations
+\begin{align}
+\frac{\mathrm{d}S}{\mathrm{d}t} &= b \left(1 - \kappa N \right ) + \gamma_{G_{1}} I_{G_{1}} + \gamma_{G_{2}} I_{G_{2}} - \left [ d + 
+  \left (1-\pi_{G_{1}} \right ) \psi_{G_{1}} + \left (1-\pi_{G_{2}} \right ) \psi_{G_{2}} \right ] S \\
+  %
+\frac{\mathrm{d}I_{G_{2}}}{\mathrm{d}t} &= b_{G_{1}} \left ( 1 - \kappa N \right ) + \left (1 - \pi_{G_{1}} \right ) S - \left [ d_{G_{1}} + \gamma_{G_{1}} + \sigma \left ( 1 - \pi_{G_{2}} \right) \psi_{G_{2}} \right ] I_{G_{1}} + \gamma_{G_{2}} I_{G_{1}G_{2}}
+\end{align}
+
+
+## Invasion analysis
+Let $\mathbf{B}_{m} = \mathbf{F}_{m} - \mathbf{V_{m}}$ describe the mutant transition matrix, where matrices $F_{m}$ and $V_{m}$ denote rates of change due to fecundity and mortality of a mutant which has resistance value $\pi_{G_{1},m}$ in a resident population having resistance value $\pi_{G_{1}}$. We then have
+\begin{align}
+\mathbf{F}_{m} &= \left [ \begin{array}{cccc}
+b_{m} & 0 & 0 & 0 \\
+0 & b_{G_{1},m} & 0 & 0 \\
+0 & 0 & b_{G_{2},m} & 0 \\
+0 & 0 & 0 & b_{G_{1}G_{2},m} 
+\end{array} \right ] \\
+
+\mathbf{V}_{m} &= \left [ 
+  \begin{array}{cccc}
+    d + \right(1-\pi_{G_{1}} \right ) \psi_{G_{1}} + 
+      \right(1-\pi_{G_{2}} \right ) \psi_{G_{2}} & \gamma_{G_{1}} &  \gamma_{G_{2}} & 
+  \end{array}  
+ \right ]
+}
+\end{align}
+
+
+
+describing the dynamics of the number of susceptibles $S$, the number of individuals $I_{G_{1}}$ infected with a foreign genetic element (FGE) of type $G_{1}$ which gives modest survival benefits and 
+
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

@@ -45,6 +45,8 @@ Solver::Solver(Parameters const &params) : // data member initializers
             break;
         }
 
+        pi = pi_tplus1;
+
         // update the population sizes of each category
         // make sure we check for convergence
         
@@ -65,14 +67,14 @@ double Solver::selgrad_pi()
         {0,0,0,0},
         {0,0,0,0}};
 
-    a[S_idx][S_idx] = dbdpi(S_idx) + par.psi[G1_idx] + par.psi[G2_idx];
+    a[S_idx][S_idx] = dbdpi(S_idx) * (1.0 - par.kappa * N) + par.psi[G1_idx] + par.psi[G2_idx];
     a[G1_idx][S_idx] = -par.psi[G1_idx];
-    a[G1_idx][G1_idx] = dbdpi(G1_idx) + par.sigma * par.psi[G2_idx];
+    a[G1_idx][G1_idx] = dbdpi(G1_idx) * (1.0 - par.kappa * N) + par.sigma * par.psi[G2_idx];
     a[G2_idx][S_idx] = -par.psi[G2_idx];
-    a[G2_idx][G2_idx] = dbdpi(G2_idx) + par.sigma * par.psi[G1_idx];
+    a[G2_idx][G2_idx] = dbdpi(G2_idx) * (1.0 - par.kappa * N) + par.sigma * par.psi[G1_idx];
     a[G1G2_idx][G1_idx] = -par.sigma * par.psi[G2_idx];
     a[G1G2_idx][G2_idx] = -par.sigma * par.psi[G1_idx];
-    a[G1G2_idx][G1G2_idx] = dbdpi(G1G2_idx);
+    a[G1G2_idx][G1G2_idx] = dbdpi(G1G2_idx) * (1.0 - par.kappa * N);
 
     double selgrad = 0.0;
 
@@ -229,7 +231,7 @@ void Solver::eigenvectors()
 
     // row 1:
 
-    m(S_idx,S_idx) = b(S_idx) -
+    m(S_idx,S_idx) = b(S_idx) * (1.0 - par.kappa * N) -
         (par.d[S_idx] + (1.0 - pi) * (par.psi[G1_idx] + par.psi[G2_idx]));
 
     m(S_idx,G1_idx) = par.gamma[G1_idx];
@@ -242,7 +244,7 @@ void Solver::eigenvectors()
     // row 2:
     m(G1_idx, S_idx) = (1.0 - pi) * par.psi[G1_idx];
 
-    m(G1_idx, G1_idx) = b(G1_idx) - 
+    m(G1_idx, G1_idx) = b(G1_idx) * (1.0 - par.kappa * N) - 
         (par.d[G1_idx] + par.gamma[G1_idx] + par.sigma * (1.0 - pi) * par.psi[G2_idx]);
 
     m(G1_idx, G2_idx) = 0.0;
@@ -255,7 +257,7 @@ void Solver::eigenvectors()
 
     m(G2_idx, G1_idx) = 0.0;
 
-    m(G2_idx, G2_idx) = b(G2_idx) -
+    m(G2_idx, G2_idx) = b(G2_idx) * (1.0 - par.kappa * N) -
         (par.d[G2_idx] + par.gamma[G2_idx] + par.sigma * (1.0 - pi) * par.psi[G1_idx]);
 
     m(G2_idx, G1G2_idx) = par.gamma[G1_idx]; // los of I_G1G2 due to loss of G1, resulting in IG2
@@ -269,7 +271,7 @@ void Solver::eigenvectors()
     // infection of a G2 individual with a G1 FGE
     m(G1G2_idx, G2_idx) = (1.0 - pi) * par.sigma * par.psi[G1_idx];
 
-    m(G1G2_idx, G1G2_idx) = b(G1G2_idx) - 
+    m(G1G2_idx, G1G2_idx) = b(G1G2_idx) * (1.0 - par.kappa * N) - 
         (par.d[G1G2_idx] + par.gamma[G1_idx] + par.gamma[G2_idx]);
 
     // now make a solver object to get at the eigenvectors
