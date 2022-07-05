@@ -6,6 +6,7 @@
 *.lyx
 *.docx
 *.swp
+*.exe
 *.png
 *.pdf
 iter_*
