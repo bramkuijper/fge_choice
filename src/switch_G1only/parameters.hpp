@@ -27,7 +27,7 @@ class Parameters
         double psi[4] = {0.0,10.0,10.00,0.0};
 
         // initial value of pi
-        double pi_init = 0.5;
+        double pi_init = 0.1;
 
         // cost of resistance
         double c = 0.3;
