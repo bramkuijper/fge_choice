@@ -57,7 +57,7 @@ Solver::Solver(Parameters const &params) : // data member initializers
         }
     } // end for time_step
 
-    write_parameters();
+    write_parameters(0);
 } // end Solver::Solver(Parameters const &params) :
 
 // calculate the selection gradient acting on resistance
@@ -146,8 +146,7 @@ void Solver::solve_endemic_eq()
                  << " at evolutionary time step " << time_step << std::endl;
 
                 write_data();
-                write_parameters();
-
+                write_parameters(1);
                 throw std::range_error(msg.str());
             }
 
@@ -203,10 +202,11 @@ void Solver::write_data()
         << pi_tplus1 - pi << ";" << std::endl;
 } // write_data()
 
-void Solver::write_parameters()
+void Solver::write_parameters(int const state)
 {
     data_file << std::endl
         << std::endl
+        << "state;" << state << std::endl
         << "FS;" << par.F[S_idx] << std::endl
         << "FG1;" << par.F[G1_idx] << std::endl
         << "FG2;" << par.F[G2_idx] << std::endl

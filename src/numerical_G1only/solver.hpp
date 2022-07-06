@@ -40,7 +40,7 @@ class Solver
 
         void write_data_headers();
         void write_data();
-        void write_parameters();
+        void write_parameters(int const state);
         
         Solver(Parameters const &parms);
 
