@@ -20,7 +20,8 @@ class Parameters
 
         // initial population size
         // S_p, S_c, I_pg1, I_pg2, I_cg1, I_cg2
-        double init_popsize[6] = {100,100,1,1,1,1};
+        double init_popsize[2] = {100,100};
+        double init_popsize_infected[2][2] = {{1,2},{3,4}};
 
         double eul = 0.001;
 
@@ -29,6 +30,9 @@ class Parameters
         long unsigned print_interval = 10;
 
         double vanish_threshold = 1e-07;
+
+        // whether there should be demographical feedback in the model
+        bool demog_feedback = false;
 };
 
 #endif
