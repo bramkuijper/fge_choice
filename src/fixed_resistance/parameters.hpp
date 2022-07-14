@@ -25,7 +25,7 @@ class Parameters
 
         double eul = 0.001;
 
-        long unsigned max_ecol_time = 1e07;
+        long unsigned max_ecol_time = 1;
 
         long unsigned print_interval = 10;
 

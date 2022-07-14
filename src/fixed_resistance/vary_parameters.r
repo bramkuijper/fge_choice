@@ -31,7 +31,7 @@ params$init_popsize_PG2 <- 1
 params$init_popsize_CG1 <- 1 
 params$init_popsize_CG2 <- 1 
 
-params$pi = 0.5
+params$pi = 0.25
 params$c = 0.05
 params$kappa = 0.001
 params$eul = 0.0001
