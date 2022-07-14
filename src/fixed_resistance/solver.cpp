@@ -10,11 +10,15 @@ Solver::Solver(Parameters &parms) :
     params{parms}
     ,data_file{parms.base_name.c_str()}
 {
+    // write the headers of the data file
+    write_data_headers();
+
     // initialize population sizes
     for (int host_idx = 0; host_idx < 2; ++host_idx)
     {
         popsize[host_idx] = params.init_popsize[host_idx];
 
+        // initialize population sizes for the infected
         for (int phage_idx = 0; phage_idx < 2; ++phage_idx)
         {
             popsize_infected[host_idx][phage_idx] = 
@@ -22,8 +26,7 @@ Solver::Solver(Parameters &parms) :
         }
     }
 
-    write_data_headers();
-
+    // variables to store the updated values in the time series
     double popsize_tplus1[2] = {0.0,0.0};
     double popsize_infected_tplus1[2][2] = {{0.0,0.0},{0.0,0.0}};
 
@@ -252,9 +255,11 @@ double Solver::dSdt(HostType host_idx) const
             + params.gamma[host_idx][G2] * popsize_infected[host_idx][G2]
             - (params.dS[host_idx] 
                 + params.psi[G1] * (host_idx == C ? 1.0 - params.pi : 1.0) 
-                    * (params.demog_feedback ? popsize_infected[P][G1] + popsize_infected[C][G1] : 1.0)
+                    * (params.demog_feedback ? popsize_infected[P][G1] + 
+                        popsize_infected[C][G1] : 1.0)
                 + params.psi[G2] 
-                    * (params.demog_feedback ? popsize_infected[P][G2] + popsize_infected[C][G2] : 1.0)
+                    * (params.demog_feedback ? popsize_infected[P][G2] + 
+                        popsize_infected[C][G2] : 1.0)
                 ) * popsize[host_idx]
             );
 } // end Solver::dSdt()
@@ -280,9 +285,12 @@ double Solver::b(HostType host_idx, PhageType phage_idx) const
 
 double Solver::dIdt(HostType host_idx, PhageType phage_idx) const
 {
-    return(b(host_idx, phage_idx) * (1.0 - params.kappa * N) 
-            + params.psi[phage_idx] * popsize[host_idx] * (host_idx == C && phage_idx == G1 ? 1.0 - params.pi : 1.0) * (params.demog_feedback ? popsize_infected[P][phage_idx] + popsize_infected[C][phage_idx] : 1.0)
-                
+    return(b(host_idx, phage_idx) * (1.0 - params.kappa * N) * 
+                popsize_infected[host_idx][phage_idx]
+            + params.psi[phage_idx] * popsize[host_idx] * 
+                (host_idx == C && phage_idx == G1 ? 1.0 - params.pi : 1.0) * 
+                (params.demog_feedback ? popsize_infected[P][phage_idx] + 
+                                        popsize_infected[C][phage_idx] : 1.0)
                 - (params.gamma[host_idx][phage_idx] + params.dI[host_idx][phage_idx]) * 
                         popsize_infected[host_idx][phage_idx]
             );
