@@ -85,8 +85,6 @@ Solver::Solver(Parameters &parms) :
                     popsize_infected[host_type_idx][phage_type_idx] + 
                     params.eul * dIdt(host_type, phage_type);
 
-                std::cout << (host_type == C ? "C" : "P") << " " << (phage_type == G1 ? "G1" : "G2") << " " << dIdt(host_type, phage_type) << std::endl;
-
                 if (popsize_infected_tplus1[host_type_idx][phage_type_idx] < 0.0)
                 {
                     popsize_infected_tplus1[host_type_idx][phage_type_idx] = 0.0;
@@ -115,7 +113,7 @@ Solver::Solver(Parameters &parms) :
         for (int host_type_idx = 0; 
                 host_type_idx < 2; ++host_type_idx)
         {
-            if (abs(popsize[host_type_idx] - 
+            if (std::abs(popsize[host_type_idx] - 
                 popsize_tplus1[host_type_idx]) > 
                     parms.vanish_threshold)
             {
@@ -129,7 +127,7 @@ Solver::Solver(Parameters &parms) :
                     phage_type_idx < 2; ++phage_type_idx)
             {
                 // OK did not converge
-                if (abs(popsize_infected[host_type_idx][phage_type_idx] - 
+                if (std::abs(popsize_infected[host_type_idx][phage_type_idx] - 
                     popsize_infected_tplus1[host_type_idx][phage_type_idx]) > 
                         parms.vanish_threshold)
                 {
