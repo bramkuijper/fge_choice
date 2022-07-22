@@ -268,9 +268,9 @@ double Solver::b(HostType host_idx) const
 {
     return(std::exp(-params.c * (
                     host_idx == C ? 
-                        1.0 - params.pi 
+                        params.pi 
                         : 
-                        1.0)));
+                        0.0)));
 
 }
 
@@ -278,9 +278,9 @@ double Solver::b(HostType host_idx, PhageType phage_idx) const
 {
     return(params.F[phage_idx] * std::exp(-params.c * (
                     host_idx == C ? 
-                        1.0 - params.pi 
+                        params.pi 
                         : 
-                        1.0)));
+                        0.0)));
 }
 
 double Solver::dIdt(HostType host_idx, PhageType phage_idx) const
