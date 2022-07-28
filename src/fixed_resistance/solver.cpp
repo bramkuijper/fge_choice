@@ -6,9 +6,10 @@
 #include "solver.hpp"
 #include "parameters.hpp"
 
+// constructor of the solver class
 Solver::Solver(Parameters &parms) :
-    params{parms}
-    ,data_file{parms.base_name.c_str()}
+    params{parms} // initialize parameters
+    ,data_file{parms.base_name.c_str()} // initialize a data file
 {
     // write the headers of the data file
     write_data_headers();
@@ -16,11 +17,12 @@ Solver::Solver(Parameters &parms) :
     // initialize population sizes
     for (int host_idx = 0; host_idx < 2; ++host_idx)
     {
+        // initialize population sizes of the susceptibles
         popsize[host_idx] = params.init_popsize[host_idx];
 
-        // initialize population sizes for the infected
         for (int phage_idx = 0; phage_idx < 2; ++phage_idx)
         {
+            // initialize population sizes of the infecteds
             popsize_infected[host_idx][phage_idx] = 
                 params.init_popsize_infected[host_idx][phage_idx];
         }
@@ -30,7 +32,7 @@ Solver::Solver(Parameters &parms) :
     double popsize_tplus1[2] = {0.0,0.0};
     double popsize_infected_tplus1[2][2] = {{0.0,0.0},{0.0,0.0}};
 
-    // aux variables to keep track of casted indices
+    // aux variables to keep track of indices
     HostType host_type;
     PhageType phage_type;
 

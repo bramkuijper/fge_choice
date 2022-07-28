@@ -140,7 +140,7 @@ for (plot_struct_idx in 1:plot.structure.l)
     plot.list.idx <- plot.list.idx + 1
 }
 
-data.tibble.sub <- data.tibble.orig[data.tibble.orig$time < 20000,]
+data.tibble.sub <- data.tibble.orig[data.tibble.orig$time < 2000,]
 
 for (plot_struct_idx in 1:plot.structure.l)
 {

@@ -13,29 +13,29 @@ params$gamma_PG2 = 1
 params$psiG1 = 1
 params$psiG2 = 1
 
-params$FG1 = 4
-params$FG2 = 10
+params$FG1 = 1
+params$FG2 = 1
 
-params$dSP = 1
-params$dSC = 1
+params$dSP = 5
+params$dSC = 5 
 
-params$dIPG1 = 1
+params$dIPG1 = 5
 params$dIPG2 = 1
-params$dICG1 = 1
+params$dICG1 = 5
 params$dICG2 = 1
 
 params$init_popsize_P <- 100
 params$init_popsize_C <- 100
-params$init_popsize_PG1 <- 1
+params$init_popsize_PG1 <- 10
 params$init_popsize_PG2 <- 1
-params$init_popsize_CG1 <- 1 
+params$init_popsize_CG1 <- 10
 params$init_popsize_CG2 <- 1
 
-params$pi = 0.5
-params$c = 0.02
+params$pi = 1.0
+params$c = 0.25
 params$kappa = 0.001
 params$eul = 0.001
-params$demog_feedback = c(0)
+params$demog_feedback = c(1)
 
 all.params <- expand.grid(params)
 

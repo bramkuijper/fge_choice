@@ -7,8 +7,14 @@
 class Parameters
 {
     public:
+        // FGE loss rate
         double gamma[2][2] = {{0.0,0.0},{0.0,0.0}};
+
+        // force of infection
         double psi[2] = {0.0,0.0};
+
+        // fecundity of individuals infected with 
+        // G1 or G2
         double F[2] = {0.0,0.0};
         double pi = 1.0;
         double c = 1.0;
