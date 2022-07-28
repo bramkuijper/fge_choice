@@ -3,7 +3,7 @@ title: "Preferences for foreign genetic elements"
 author: "Bram Kuijper"
 date: '2022-07-02'
 output: pdf_document
-bibliography: /home/bram/Projects/databases/transgenerational.bib
+bibliography: /Users/bram/Projects/databases/transgenerational.bib
 csl: frontiers-in-ecology-and-evolution.csl
 ---
 
@@ -71,7 +71,7 @@ By calculating
 \end{align}
 we can assess when equilibrium resistance value $\hat{\pi}_{G_{1},m}=0$ is stable to the invasion of mutants with trait values $\hat{\pi}_{G_{1},m}>0$. When $\gamma_{G_{1}} = \gamma_{G_{2}} = 0$ and fecundities of both G_{1} and G_{2} are smaller than that of the susceptible strain ($F_{G_{1}},F_{G_{2}}<<F_{S}) we find
 \begin{align}
-\pi_{G_{1},\text{threshold}} = 1 - \frac{1}{c} + \frac{d + \psi_{G_{2}}}{\psi_{G}_{1}}.
+\pi_{G_{1},\text{threshold}} = 1 - \frac{1}{c} + \frac{d + \psi_{G_{2}}}{\psi_{{G}_{1}}}.
 \end{align}
 In other words, the cost of resistance that allows for resistance to evolve has to be smaller than $c< \frac{\psi_{G_{1}}}{d+\psi_{G_{1}}}$, which is more restrictive than eq. [4] in @Gandon2013.
 
