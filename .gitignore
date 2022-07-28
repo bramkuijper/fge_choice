@@ -6,6 +6,7 @@
 *.doc
 *.lyx
 *.docx
+*.pptx
 *.swp
 *.exe
 *.png

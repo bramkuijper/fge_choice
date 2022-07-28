@@ -2,7 +2,7 @@
 title: "Supplementary Model Description"
 date: '2022-07-02'
 output: pdf_document
-bibliography: /home/bram/Projects/databases/transgenerational.bib
+bibliography: /Users/bram/Projects/databases/transgenerational.bib
 csl: frontiers-in-ecology-and-evolution.csl
 
 header-includes:
@@ -34,12 +34,10 @@ The choosy strain is in competition with a promiscuous strain (denoted by subscr
 %
 \frac{\mathrm{d}I_{G_{1}G_{2}}}{\mathrm{d}t} &= b_{G_{1}G_{2}} \left ( 1 - \kappa N \right ) + \sigma \left [ \left( 1 - \pi_{G_{1}} \right ) \psi_{G_{1}} I_{G_{2}} + \psi_{G_{2}} I_{G_{1}} \right ] - \left [ d_{G_{1}G_{2}} + \gamma_{G_{1}} + \gamma_{G_{2}} \right ] I_{G_{1}G_{2}} 
 \end{align}
-where $N$ is the total population size, $N = \sum_{k \in (c,p)} \left ( S_{k} + \sum_{i \in (1,2)} I_{k G_{i}} \right )$. Individual cells reproduce at rate $b \left(x \righ)$, where
+where $N$ is the total population size, $N = \sum_{k \in (c,p)} \left ( S_{k} + \sum_{i \in (1,2)} I_{k G_{i}} \right )$. Susceptible individuals reproduce at rate $b \left(x \righ)$, where
 \begin{align}
-b \left(  \right )
+b_{y} \left( x \right ) = 
 \end{align}
 and when infected  allowing for lysogenic transmission
  
-
-
 ## References
