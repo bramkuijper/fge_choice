@@ -1,79 +1,45 @@
 ---
-title: "Preferences for foreign genetic elements"
-author: "Bram Kuijper"
+title: "Supplementary Model Description"
 date: '2022-07-02'
 output: pdf_document
 bibliography: /home/bram/Projects/databases/transgenerational.bib
 csl: frontiers-in-ecology-and-evolution.csl
+
+header-includes:
+  - \usepackage[left]{lineno}
+  - \linenumbers
+
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## The evolution of resistance against only modestly beneficial FGE elements: only susceptibles choose
-We consider two types of FGE, $G_{1}$ (modestly beneficial) and $G_{2}$ (highly beneficial) and then assess whether resistance $\pi_{G_{1}}$ against the modest type can ever evolve.
+Here we develop an ecological model to assess whether strains which resist beneficial FGEs can increase in frequency in populations. 
 
-Following @Gandon2013, we have the following set of differential equations
+We consider two types of foreign genetic elements (FGEs): the first FGE is denoted as $G_{1}$ is modestly beneficial as it provides protection against a single antibiotic. The second FGE is denoted as $G_{2}$ and is highly beneficial and provides protection against two antibiotics. 
+
+We then assess the ecological dynamics of a 'choosy' strain (denoted by subscript $c$) that resists infection by the good FGE $G_{1}$ with probability $\pi_{G_{1}}$, whereas it has no resistance against infection by the better FGE $\pi_{G_{2}} = 0$. Here, resistance reflects the probability that an FGE of type $G_{i}$ is detected and degraded by CRISPR (see also @Gandon2013).
+
+The choosy strain is in competition with a promiscuous strain (denoted by subscript $p$) that has no resistance against either type of FGE. Let $S_{p}$ and $S_{c}$ then be the number of susceptible individuals of the promiscuous and choosy strain respectively, whereas $I_{pG_{i}}$ and $I_{cG_{i}}$ are the number of individuals of the promiscuous and choosy strain infected with an FGE of type $i$ where $i \in (1,2)$. The change in numbers of individuals is then described by the following system of differential equations:
 \begin{align}
-\frac{\mathrm{d}S}{\mathrm{d}t} &= b \left(1 - \kappa N \right ) + \gamma_{G_{1}} I_{G_{1}} + \gamma_{G_{2}} I_{G_{2}} - \left [ d + 
-  \left (1-\pi_{G_{1}} \right ) \psi_{G_{1}} + \psi_{G_{2}} \right ] S \\
+\frac{\mathrm{d}S_{c}}{\mathrm{d}t} &= b \left ( \pi_{G_{1}} \right ) \left(1 - \kappa N \right ) S_{c} + \gamma_{G_{1}} I_{G_{1}} + \gamma_{G_{2}} I_{G_{2}} - \left [ d + 
+  \left (1-\pi_{G_{1}} \right ) \psi_{G_{1}} + \psi_{G_{2}} \right ] S_{c} \\
   %
-\frac{\mathrm{d}I_{G_{1}}}{\mathrm{d}t} &= b_{G_{1}} \left ( 1 - \kappa N \right ) + \left (1 - \pi_{G_{1}} \right ) \psi_{G_{1}} S - \left [ d_{G_{1}} + \gamma_{G_{1}} + \sigma \psi_{G_{2}} \right ] I_{G_{1}} + \gamma_{G_{2}} I_{G_{1}G_{2}}\\
+\frac{\mathrm{d}S_{p}}{\mathrm{d}t} &= b \left (0 \right ) \left(1 - \kappa N \right ) S_{p} + \gamma_{G_{1}} I_{G_{1}} + \gamma_{G_{2}} I_{G_{2}} - \left [ d + \psi_{G_{1}} + \psi_{G_{2}} \right ] S_{p} \\
+  %
+\frac{\mathrm{d}I_{p G_{i}}}{\mathrm{d}t} &= b_{G_{i}} \left ( 1 - \kappa N \right ) I_{p G_{i}} + \psi_{G_{i}} S_{p} - \left [ d_{G_{i}} + \gamma_{G_{i}} \right ] I_{G_{i}} \\
 %
-\frac{\mathrm{d}I_{G_{2}}}{\mathrm{d}t} &= b_{G_{2}} \left ( 1 - \kappa N \right ) + \psi_{G_{2}} S - \left [ d_{G_{2}} + \gamma_{G_{2}} + \sigma \left (1 - \pi_{G_{1}} \right ) \psi_{G_{1}} \right ] I_{G_{2}} + \gamma_{G_{1}} I_{G_{1}G_{2}} \\
+\frac{\mathrm{d}I_{c G_{1}}}{\mathrm{d}t} &= b_{G_{1}} \left ( 1 - \kappa N \right ) I_{c G_{1}} + \left ( 1 - \pi_{G_{1}}\right ) \psi_{G_{2}} S_{c} - \left [ d_{G_{1}} + \gamma_{G_{1}} \right ] I_{c G_{1}} \\
 %
 \frac{\mathrm{d}I_{G_{1}G_{2}}}{\mathrm{d}t} &= b_{G_{1}G_{2}} \left ( 1 - \kappa N \right ) + \sigma \left [ \left( 1 - \pi_{G_{1}} \right ) \psi_{G_{1}} I_{G_{2}} + \psi_{G_{2}} I_{G_{1}} \right ] - \left [ d_{G_{1}G_{2}} + \gamma_{G_{1}} + \gamma_{G_{2}} \right ] I_{G_{1}G_{2}} 
 \end{align}
-Here, the fecundity function of type i $b_{i}$ is given by
+where $N$ is the total population size, $N = \sum_{k \in (c,p)} \left ( S_{k} + \sum_{i \in (1,2)} I_{k G_{i}} \right )$. Individual cells reproduce at rate $b \left(x \righ)$, where
 \begin{align}
-b_{i} = F_{i} \exp \left(-c \pi_{G_{1}} \right )
+b \left(  \right )
 \end{align}
+and when infected  allowing for lysogenic transmission
+ 
 
-## Invasion analysis
-Let $\mathbf{B}_{m} = \mathbf{F}_{m} - \mathbf{V}_{m}$ describe the transition matrix of mutant with the resistance trait $\pi_{G_{1},m}$. Here, matrices $\mathbf{F}_{m}$ and $\mathbf{V}_{m}$ respectively denote rates of change due to fecundity and mortality of a mutant which has resistance value $\pi_{G_{1},m}$ in a resident population having resistance value $\pi_{G_{1}}$. We then have
-\begin{align}
-\mathbf{F}_{m} &= \left ( 1 - \kappa N \right ) \left [ \begin{array}{cccc}
-b_{m} & 0 & 0 & 0 \\
-0 & b_{G_{1},m} & 0 & 0 \\
-0 & 0 & b_{G_{2},m} & 0 \\
-0 & 0 & 0 & b_{G_{1}G_{2},m} 
-\end{array} \right ] \\
-\mathbf{V}_{m} &= - \left [ 
-  \begin{array}{cc}
-    -\left[d + \left (1-\pi_{G_{1},m} \right ) \psi_{G_{1}} + 
-      \psi_{G_{2}} \right ] & \gamma_{G_{1}}  \\
-      %
-      \left (1 - \pi_{G_{1},m} \right ) \psi_{G_{1}} &  -\left [ d_{G_{1}} + \gamma_{G_{1}} + \sigma \psi_{G_{2}} \right ]  \\
-      %
-      \psi_{G_{2}} & 0 \\
-      %
-      0 &  \psi_{G_{2}}  
-  \end{array}  
- \right . \\
-& \quad \quad \quad \left . % 2nd half of matrix
-    \begin{array}{cc}
-    \gamma_{G_{2}} & 0 \\
-    %
-    0 & \gamma_{G_{2}} \\
-    %
-    - \left [ d_{G_{2}} + \gamma_{G_{2}} + \sigma \left (1 - \pi_{G_{1},m} \right ) \psi_{G_{1}} \right ] & \gamma_{G_{1}} \\
-    %
-    \sigma \left( 1 - \pi_{G_{1},m} \right ) \psi_{G_{1}} & -\left [ d_{G_{1}G_{2}} + \gamma_{G_{1}} + \gamma_{G_{2}} \right ]
-    \end{array}
-    \right ]
-\end{align}
 
-### Main result
-By calculating
-\begin{align}
-    \left . \frac{\mathrm{d}\lambda}{\mathrm{d}\pi_{G_{1},m}} \right |_{\pi_{G_{1}},m} = 0
-\end{align}
-we can assess when equilibrium resistance value $\hat{\pi}_{G_{1},m}=0$ is stable to the invasion of mutants with trait values $\hat{\pi}_{G_{1},m}>0$. When $\gamma_{G_{1}} = \gamma_{G_{2}} = 0$ and fecundities of both G_{1} and G_{2} are smaller than that of the susceptible strain ($F_{G_{1}},F_{G_{2}}<<F_{S}) we find
-\begin{align}
-\pi_{G_{1},\text{threshold}} = 1 - \frac{1}{c} + \frac{d + \psi_{G_{2}}}{\psi_{G}_{1}}.
-\end{align}
-In other words, the cost of resistance that allows for resistance to evolve has to be smaller than $c< \frac{\psi_{G_{1}}}{d+\psi_{G_{1}}}$, which is more restrictive than eq. [4] in @Gandon2013.
-
-## Switch from one plasmid to another
-In this version, we consider a scenario where cells make use of a plasmid
+## References
