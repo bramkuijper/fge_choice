@@ -171,7 +171,7 @@ def single_panel(
 #    plt.close(plotje.fig)
 
     if legend:
-        the_ax.legend(loc="lower right"
+        the_ax.legend(loc="center right"
                 ,fontsize=8
                 ,frameon=False)
 
