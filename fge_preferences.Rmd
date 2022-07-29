@@ -1,20 +1,21 @@
 ---
-title: "Supplementary Model Description"
-date: '2022-07-02'
-output: pdf_document
-bibliography: /Users/bram/Projects/databases/transgenerational.bib
-csl: frontiers-in-ecology-and-evolution.csl
-
-header-includes:
-  - \usepackage[left]{lineno}
-  - \linenumbers
-
+title: 
+  !expr eval(10*5)
+output: 
+  html_document
 ---
+
+```{r}
+mtcars
+```
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+```{r eval=T}
+here::here()
+```
 Here we develop an ecological model to assess whether strains which resist beneficial FGEs can increase in frequency in populations. 
 
 We consider two types of foreign genetic elements (FGEs): the first FGE is denoted as $G_{1}$ is modestly beneficial as it provides protection against a single antibiotic. The second FGE is denoted as $G_{2}$ and is highly beneficial and provides protection against two antibiotics. 
@@ -23,20 +24,20 @@ We then assess the ecological dynamics of a 'choosy' strain (denoted by subscrip
 
 The choosy strain is in competition with a promiscuous strain (denoted by subscript $p$) that has no resistance against either type of FGE. Let $S_{p}$ and $S_{c}$ then be the number of susceptible individuals of the promiscuous and choosy strain respectively, whereas $I_{pG_{i}}$ and $I_{cG_{i}}$ are the number of individuals of the promiscuous and choosy strain infected with an FGE of type $i$ where $i \in (1,2)$. The change in numbers of individuals is then described by the following system of differential equations:
 \begin{align}
-\frac{\mathrm{d}S_{c}}{\mathrm{d}t} &= b \left ( \pi_{G_{1}} \right ) \left(1 - \kappa N \right ) S_{c} + \gamma_{G_{1}} I_{G_{1}} + \gamma_{G_{2}} I_{G_{2}} - \left [ d + 
+\frac{\mathrm{d}S_{c}}{\mathrm{d}t} &= b_{S} \left ( \pi_{G_{1}} \right ) \left(1 - \kappa N \right ) S_{c} + \gamma_{G_{1}} I_{G_{1}} + \gamma_{G_{2}} I_{G_{2}} - \left [ d + 
   \left (1-\pi_{G_{1}} \right ) \psi_{G_{1}} + \psi_{G_{2}} \right ] S_{c} \\
   %
-\frac{\mathrm{d}S_{p}}{\mathrm{d}t} &= b \left (0 \right ) \left(1 - \kappa N \right ) S_{p} + \gamma_{G_{1}} I_{G_{1}} + \gamma_{G_{2}} I_{G_{2}} - \left [ d + \psi_{G_{1}} + \psi_{G_{2}} \right ] S_{p} \\
+\frac{\mathrm{d}S_{p}}{\mathrm{d}t} &= b_{S} \left (0 \right ) \left(1 - \kappa N \right ) S_{p} + \gamma_{G_{1}} I_{G_{1}} + \gamma_{G_{2}} I_{G_{2}} - \left [ d + \psi_{G_{1}} + \psi_{G_{2}} \right ] S_{p} \\
   %
 \frac{\mathrm{d}I_{p G_{i}}}{\mathrm{d}t} &= b_{G_{i}} \left ( 1 - \kappa N \right ) I_{p G_{i}} + \psi_{G_{i}} S_{p} - \left [ d_{G_{i}} + \gamma_{G_{i}} \right ] I_{G_{i}} \\
 %
-\frac{\mathrm{d}I_{c G_{1}}}{\mathrm{d}t} &= b_{G_{1}} \left ( 1 - \kappa N \right ) I_{c G_{1}} + \left ( 1 - \pi_{G_{1}}\right ) \psi_{G_{2}} S_{c} - \left [ d_{G_{1}} + \gamma_{G_{1}} \right ] I_{c G_{1}} \\
+\frac{\mathrm{d}I_{c G_{1}}}{\mathrm{d}t} &= b_{G_{1}} \left ( 1 - \kappa N \right ) I_{c G_{1}} + \left ( 1 - \pi_{G_{1}}\right ) \psi_{G_{1}} S_{c} - \left [ d_{G_{1}} + \gamma_{G_{1}} \right ] I_{c G_{1}} \\
 %
-\frac{\mathrm{d}I_{G_{1}G_{2}}}{\mathrm{d}t} &= b_{G_{1}G_{2}} \left ( 1 - \kappa N \right ) + \sigma \left [ \left( 1 - \pi_{G_{1}} \right ) \psi_{G_{1}} I_{G_{2}} + \psi_{G_{2}} I_{G_{1}} \right ] - \left [ d_{G_{1}G_{2}} + \gamma_{G_{1}} + \gamma_{G_{2}} \right ] I_{G_{1}G_{2}} 
+\frac{\mathrm{d}I_{c G_{2}}}{\mathrm{d}t} &= b_{G_{2}} \left ( 1 - \kappa N \right ) I_{c G_{2}} +  \psi_{G_{2}} S_{c} - \left [ d_{G_{1}} + \gamma_{G_{1}} \right ] I_{c G_{1}} 
 \end{align}
-where $N$ is the total population size, $N = \sum_{k \in (c,p)} \left ( S_{k} + \sum_{i \in (1,2)} I_{k G_{i}} \right )$. Susceptible individuals reproduce at rate $b \left(x \righ)$, where
+where $N$ is the total population size, $N = \sum_{k \in (c,p)} S_{k} +\sum_{k \in (c,p)} \sum_{i \in (1,2)} I_{k G_{i}}$. Susceptible individuals reproduce at rate $b \left(x \right )$, where
 \begin{align}
-b_{y} \left( x \right ) = 
+b_{y} \left ( x \right ) = 
 \end{align}
 and when infected  allowing for lysogenic transmission
  
