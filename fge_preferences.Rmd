@@ -1,44 +1,52 @@
 ---
 title: 
-  !expr eval(10*5)
+  Supplementary Model Information
 output: 
-  html_document
+  pdf_document
+bibliography:
+    /home/bram/Projects/databases/transgenerational.bib
+csl: bibstyle.csl
 ---
-
-```{r}
-mtcars
-```
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r eval=T}
-here::here()
-```
-Here we develop an ecological model to assess whether strains which resist beneficial FGEs can increase in frequency in populations. 
+Here we develop an ecological model to assess whether choosy strains which resist beneficial FGEs can increase in frequency, while competing wi
 
-We consider two types of foreign genetic elements (FGEs): the first FGE is denoted as $G_{1}$ is modestly beneficial as it provides protection against a single antibiotic. The second FGE is denoted as $G_{2}$ and is highly beneficial and provides protection against two antibiotics. 
+## Strains and FGEs
+We consider two types of foreign genetic elements (FGEs): the first FGE is denoted as $G_{1}$ and is modestly beneficial, as it provides protection against a single antibiotic. The second FGE is denoted as $G_{2}$ and is highly beneficial: it provides protection against the same antibiotic as $G_{1}$ does, but also against another antibiotic.
 
-We then assess the ecological dynamics of a 'choosy' strain (denoted by subscript $c$) that resists infection by the good FGE $G_{1}$ with probability $\pi_{G_{1}}$, whereas it has no resistance against infection by the better FGE $\pi_{G_{2}} = 0$. Here, resistance reflects the probability that an FGE of type $G_{i}$ is detected and degraded by CRISPR (see also @Gandon2013).
+We assess the ecological dynamics of a 'choosy' strain (denoted by subscript $c$) that resists infection by the FGE $G_{1}$ with probability $\pi_{G_{1}}$, whereas it does not resist infections by the better FGE $\pi_{G_{2}} = 0$. Here, resistance reflects the probability that an FGE of type $G_{i}$ is detected and degraded by CRISPR (see also @Gandon2013).
 
-The choosy strain is in competition with a promiscuous strain (denoted by subscript $p$) that has no resistance against either type of FGE. Let $S_{p}$ and $S_{c}$ then be the number of susceptible individuals of the promiscuous and choosy strain respectively, whereas $I_{pG_{i}}$ and $I_{cG_{i}}$ are the number of individuals of the promiscuous and choosy strain infected with an FGE of type $i$ where $i \in (1,2)$. The change in numbers of individuals is then described by the following system of differential equations:
+The choosy strain is in competition with a promiscuous strain (denoted by subscript $p$) that has no resistance against either type of FGE. Let $S_{p}$ and $S_{c}$ then be the number of susceptible individuals of the promiscuous and choosy strain respectively, whereas $I_{pG_{i}}$ and $I_{cG_{i}}$ are the number of individuals of the promiscuous and choosy strain infected with an FGE of type $i$ where $i \in (1,2)$. 
+
+## Dynamics
+The change in numbers of individuals is then described by the following system of differential equations:
 \begin{align}
+\frac{\mathrm{d}S_{p}}{\mathrm{d}t} &= b_{S} \left (0 \right ) \left(1 - \kappa N \right ) S_{p} + \gamma_{G_{1}} I_{G_{1}} + \gamma_{G_{2}} I_{G_{2}} - \left [ d + \psi_{G_{1}} + \psi_{G_{2}} \right ] S_{p} (\#eq:dSpdt) \\
+%
 \frac{\mathrm{d}S_{c}}{\mathrm{d}t} &= b_{S} \left ( \pi_{G_{1}} \right ) \left(1 - \kappa N \right ) S_{c} + \gamma_{G_{1}} I_{G_{1}} + \gamma_{G_{2}} I_{G_{2}} - \left [ d + 
   \left (1-\pi_{G_{1}} \right ) \psi_{G_{1}} + \psi_{G_{2}} \right ] S_{c} \\
   %
-\frac{\mathrm{d}S_{p}}{\mathrm{d}t} &= b_{S} \left (0 \right ) \left(1 - \kappa N \right ) S_{p} + \gamma_{G_{1}} I_{G_{1}} + \gamma_{G_{2}} I_{G_{2}} - \left [ d + \psi_{G_{1}} + \psi_{G_{2}} \right ] S_{p} \\
-  %
-\frac{\mathrm{d}I_{p G_{i}}}{\mathrm{d}t} &= b_{G_{i}} \left ( 1 - \kappa N \right ) I_{p G_{i}} + \psi_{G_{i}} S_{p} - \left [ d_{G_{i}} + \gamma_{G_{i}} \right ] I_{G_{i}} \\
+\frac{\mathrm{d}I_{p G_{i}}}{\mathrm{d}t} &= b_{G_{i}}(0) \left ( 1 - \kappa N \right ) I_{p G_{i}} + \psi_{G_{i}} S_{p} - \left [ d_{G_{i}} + \gamma_{G_{i}} \right ] I_{G_{i}} \quad \text{for }i\in(1,2)\\
 %
-\frac{\mathrm{d}I_{c G_{1}}}{\mathrm{d}t} &= b_{G_{1}} \left ( 1 - \kappa N \right ) I_{c G_{1}} + \left ( 1 - \pi_{G_{1}}\right ) \psi_{G_{1}} S_{c} - \left [ d_{G_{1}} + \gamma_{G_{1}} \right ] I_{c G_{1}} \\
+\frac{\mathrm{d}I_{c G_{1}}}{\mathrm{d}t} &= b_{G_{1}}\left( \pi_{G_{1}} \right ) \left ( 1 - \kappa N \right ) I_{c G_{1}} + \left ( 1 - \pi_{G_{1}}\right ) \psi_{G_{1}} S_{c} - \left [ d_{G_{1}} + \gamma_{G_{1}} \right ] I_{c G_{1}} \\
 %
-\frac{\mathrm{d}I_{c G_{2}}}{\mathrm{d}t} &= b_{G_{2}} \left ( 1 - \kappa N \right ) I_{c G_{2}} +  \psi_{G_{2}} S_{c} - \left [ d_{G_{1}} + \gamma_{G_{1}} \right ] I_{c G_{1}} 
+\frac{\mathrm{d}I_{c G_{2}}}{\mathrm{d}t} &= b_{G_{2}}\left( \pi_{G_{1}} \right ) \left ( 1 - \kappa N \right ) I_{c G_{2}} +  \psi_{G_{2}} S_{c} - \left [ d_{G_{1}} + \gamma_{G_{1}} \right ] I_{c G_{1}} 
 \end{align}
-where $N$ is the total population size, $N = \sum_{k \in (c,p)} S_{k} +\sum_{k \in (c,p)} \sum_{i \in (1,2)} I_{k G_{i}}$. Susceptible individuals reproduce at rate $b \left(x \right )$, where
+where $N$ is the total population size, $N = S_{c} + S_{p} +I_{pG1} + I_{pG2} + I_{cG1} + I_{cG2}$. An individual of type $y$ which expresses resistance probability $x$ against $G_{1}$ reproduces at rate 
 \begin{align}
-b_{y} \left ( x \right ) = 
+b_{y} \left ( x \right ) = F_{y} \mathrm{exp}\left( - c x \right),
 \end{align}
-and when infected  allowing for lysogenic transmission
+where $F_{y}$ is a parameter that reflects how fecundity is affected by an individual's current state and the antibiotic treatment.  The exponential function reflects how resistance $x$ against the $G1$ FGE reduces fecundity, scaled by the cost of choosiness parameter $c$. In the system of equations \@ref(eq:dSpdt), promiscuous individuals that express no choosiness have $x=0$.
+
+## Different antibiotic treatments
+When individuals are exposed to an environment without antibiotic, we have $F_{S} > F_{G1} > F_{G2}$  as we assume that carrying an FGE comes at a net cost in the absence of an antibiotic. 
+
+When individuals are exposed to a single antibiotic to which $G_{1}$ and $G_{2}$ both provide protection, we have $F_{G1} \geq F_{G2} > F_{S}$
  
+When individuals are exposed to a single antibiotic to which only $G_{2}$ provides protection, we have $F_{G2} > F_{S} > F_{G1}$
+
+When individuals are exposed to a mixture of antibiotics to which only $G_{2}$ provides protection, we have $F_{G2} > F_{S} > F_{G1}$
 ## References
