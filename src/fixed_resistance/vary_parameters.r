@@ -31,11 +31,11 @@ params$init_popsize_PG2 <- 1
 params$init_popsize_CG1 <- 1 
 params$init_popsize_CG2 <- 1
 
-params$pi = c(0.5,1.0)
-params$c = seq(0,0.1,0.0005)
+params$pi = c(0.25,0.05)
+params$c = seq(0,-0.1,-0.0005)
 params$kappa = 0.001
 params$eul = 0.001
-params$demog_feedback = c(0,1)
+params$demog_feedback = c(0)
 
 all.params <- expand.grid(params)
 
@@ -43,5 +43,6 @@ all.params <- expand.grid(params)
 make.batch.file(
                 parameter_list=all.params
                 ,executable_path="./solver.exe"
+                ,output_file_prefix="output2"
                 ,n_replicates = 1)
 
