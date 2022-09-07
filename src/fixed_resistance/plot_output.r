@@ -36,7 +36,11 @@ jsonstuff <- paste0('[
     },
     {
         "xvar" : "',xvar,'",
-        "yvar" : ["Ipg1","Ipg2","Icg1","Icg2"]
+        "yvar" : ["Icg2","Ipg2"]
+    },
+    {
+        "xvar" : "',xvar,'",
+        "yvar" : ["Ipg1","Icg1"]
     },
     {
         "xvar" : "',xvar,'",
@@ -44,7 +48,8 @@ jsonstuff <- paste0('[
     },
     {
         "xvar" : "',xvar,'",
-        "yvar" : ["Choosy","Promiscuous"]
+        "yvar" : ["Choosy","Promiscuous"],
+        "ylim" : [0,600]
     },
     {
         "xvar" : "',xvar,'",
@@ -77,10 +82,10 @@ data.tibble.orig <- read_delim(file=file.name
 
 data.tibble.orig <- mutate(data.tibble.orig,
         Ipg2 = Ipg2 
-        ,Choosy=Icg1 + Icg2
-        ,Promiscuous=Ipg1 + Ipg2
-        ,log10Choosy=log10(Icg1 + Icg2)
-        ,log10Promiscuous=log10(Ipg1 + Ipg2)
+        ,Choosy=Sc + Icg1 + Icg2
+        ,Promiscuous=Sp + Ipg1 + Ipg2
+        ,log10Choosy=log10(Sc + Icg1 + Icg2)
+        ,log10Promiscuous=log10(Sp + Ipg1 + Ipg2)
         )
 
 if (nrow(data.tibble.orig) > 50000)
@@ -140,7 +145,9 @@ for (plot_struct_idx in 1:plot.structure.l)
     plot.list.idx <- plot.list.idx + 1
 }
 
-data.tibble.sub <- data.tibble.orig[data.tibble.orig$time < 2000,]
+max_t <- 20000
+
+data.tibble.sub <- data.tibble.orig[data.tibble.orig$time < max_t,]
 
 for (plot_struct_idx in 1:plot.structure.l)
 {
@@ -173,7 +180,7 @@ for (plot_struct_idx in 1:plot.structure.l)
     {
         plot.list[[plot.list.idx]] <- plot.list[[plot.list.idx]] + ylim(
                 unlist(
-                        plot.structure[[plot.list.idx]]$ylim)
+                        plot.structure[[plot_struct_idx]]$ylim)
                 )
     }
     

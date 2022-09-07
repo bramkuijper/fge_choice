@@ -3,6 +3,7 @@
 import seaborn as sns
 import pandas as pd
 import re, string
+import os.path
 
 from matplotlib import rcParams
 from matplotlib.gridspec import GridSpec
@@ -105,6 +106,9 @@ def single_panel(
         ,row
         ,col
         ,filename
+        ,tmax=200000
+        ,ylim=[0,600]
+        ,title=None
         ,legend=False):
     
     the_ax = plt.subplot(gsobject[row,col])
@@ -130,8 +134,6 @@ def single_panel(
             ,id_vars=["time"]
             ,value_vars=["Choosy","Promiscuous"])
 
-    tmax = 1800
-
     colors = ["#cc79a7","#3873b2"]
 
     sns.set_palette(sns.color_palette(colors))
@@ -150,6 +152,9 @@ def single_panel(
 
     sns.despine(ax=the_ax, left=remove_y, top=True, right=True)
 
+    if title != None:
+        the_ax.set_title(title)
+
     the_ax.tick_params(left=not remove_y, 
             labelleft=not remove_y)
 
@@ -159,28 +164,40 @@ def single_panel(
         ylab = r"Number infected, $I_{p\cdot}$ and $I_{c\cdot}$"
 
     the_ax.set(xlabel=r"Time, $t$"
-            ,ylabel=ylab)
+            ,ylabel=ylab,
+            ylim=ylim)
 
-    panel_label = AnchoredText(
-            s=string.ascii_uppercase[col]
-            ,frameon=False
-            ,loc="lower right")
+    the_ax.set_title(string.ascii_uppercase[col]
+            ,loc="left")
 
-    the_ax.add_artist(panel_label)
+#    panel_label = AnchoredText(
+#            s=
+#            ,frameon=False
+#            ,loc="lower right")
+#
+#    the_ax.add_artist(panel_label)
 
 #    plt.close(plotje.fig)
 
     if legend:
-        the_ax.legend(loc="center right"
+        the_ax.legend(loc="lower right"
                 ,fontsize=8
                 ,frameon=False)
 
 #    the_ax.savefig(fname="plot_choosy_vs_promiscuous.pdf")
 
+demog_feedback = 0
+
+folder = "./"
+
+if demog_feedback < 1:
+    folder = "no_demog_feedback/"
 
 # file name 
-file_choosy_outperforms = "choosy_outperforms_short_term.csv"
-file_choosy_underperforms = "choosy_underperforms.csv"
+file_no_infection = os.path.join(folder,"output_1")
+file_phageG = os.path.join(folder,"output_2")
+file_choosy_underperforms = os.path.join(folder,"output_3")
+file_choosy_outperforms = os.path.join(folder,"output_4")
 
 width = 10
 height = 3
@@ -189,18 +206,55 @@ fig = plt.figure(figsize=(width,height))
 # start gridspec object
 gs = GridSpec(nrows=1, ncols=4)
 
+ylim=[-10,600]
+
+if demog_feedback == 0:
+    ylim=[-10,800]
+
+tmax = 60000
+
+if demog_feedback == 0:
+    tmax = 200000
+
 single_panel(gsobject=gs, 
         row=0,
         col=0,
-        filename=file_choosy_underperforms)
+        ylim=ylim,
+        tmax=tmax,
+        filename=file_no_infection,
+        title="No MGEs",
+        legend=False)
 
 single_panel(gsobject=gs, 
         row=0,
         col=1,
+        ylim=ylim,
+        tmax=tmax,
+        title="Only MGE G",
+        filename=file_phageG)
+
+single_panel(gsobject=gs, 
+        row=0,
+        col=2,
+        ylim=ylim,
+        tmax=tmax,
+        title="Only MGE B",
+        filename=file_choosy_underperforms)
+
+single_panel(gsobject=gs, 
+        row=0,
+        col=3,
+        ylim=ylim,
+        tmax=tmax,
+        title="Mixture of MGEs",
         filename=file_choosy_outperforms,
         legend=True)
 
+
+
+filename = "plot_choosy_vs_promiscuous_demogfb" + str(demog_feedback) + ".pdf"
+
 fig.savefig(
-        fname="plot_choosy_vs_promiscuous.pdf"
+        fname=filename
         ,bbox_inches="tight"
         )
