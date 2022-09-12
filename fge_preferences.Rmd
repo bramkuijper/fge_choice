@@ -2,9 +2,12 @@
 title: 
   Supplementary Model Information
 output: 
-  pdf_document
+  pdf_document:
+    keep_tex: true
+    includes:
+      in_header: preamble.tex
 bibliography:
-    /home/bram/Projects/databases/transgenerational.bib
+    /Users/ALWK201/Projects/databases/transgenerational.bib
 csl: bibstyle.csl
 ---
 
@@ -12,41 +15,58 @@ csl: bibstyle.csl
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-Here we develop an ecological model to assess whether choosy strains which resist beneficial FGEs can increase in frequency, while competing wi
+Here we develop an ecological model to assess whether choosy strains which resist beneficial foreign genetic elements (FGEs) can increase in frequency, while competing with promiscuous strain without such resistance.
 
 ## Strains and FGEs
-We consider two types of foreign genetic elements (FGEs): the first FGE is denoted as $G_{1}$ and is modestly beneficial, as it provides protection against a single antibiotic. The second FGE is denoted as $G_{2}$ and is highly beneficial: it provides protection against the same antibiotic as $G_{1}$ does, but also against another antibiotic.
+We consider two types of FGE: the first FGE is denoted as $G$ and is modestly beneficial, as it provides protection against a single antibiotic. The second FGE is denoted as $B$ and is highly beneficial: it provides protection against the same antibiotic as $G$ does, but also against another antibiotic.
 
-We assess the ecological dynamics of a 'choosy' strain (denoted by subscript $c$) that resists infection by the FGE $G_{1}$ with probability $\pi_{G_{1}}$, whereas it does not resist infections by the better FGE $\pi_{G_{2}} = 0$. Here, resistance reflects the probability that an FGE of type $G_{i}$ is detected and degraded by CRISPR (see also @Gandon2013).
+We assess the ecological dynamics of a 'choosy' strain (denoted by subscript $c$) that resists infection by the FGE $G$ with probability $\pi_{G}$, whereas it does not resist infections by the better FGE ($\pi_{B} = 0$). Here, resistance reflects the probability that an FGE of type $G_{i}$ is detected and degraded by CRISPR (see also @Gandon2013).
 
 The choosy strain is in competition with a promiscuous strain (denoted by subscript $p$) that has no resistance against either type of FGE. Let $S_{p}$ and $S_{c}$ then be the number of susceptible individuals of the promiscuous and choosy strain respectively, whereas $I_{pG_{i}}$ and $I_{cG_{i}}$ are the number of individuals of the promiscuous and choosy strain infected with an FGE of type $i$ where $i \in (1,2)$. 
 
 ## Dynamics
-The change in numbers of individuals is then described by the following system of differential equations:
+The change in numbers of promiscuous and choosy susceptible individuals $S_c$ and $S_{c}$ and promiscuous and choosy infected individuals $I_{px}$ and $I_{cx}$ infected by FGEs of type $x$ is then described by the following system of differential equations:
 \begin{align}
-\frac{\mathrm{d}S_{p}}{\mathrm{d}t} &= b_{S} \left (0 \right ) \left(1 - \kappa N \right ) S_{p} + \gamma_{G_{1}} I_{G_{1}} + \gamma_{G_{2}} I_{G_{2}} - \left [ d + \psi_{G_{1}} + \psi_{G_{2}} \right ] S_{p} (\#eq:dSpdt) \\
+\frac{\mathrm{d}S_{p}}{\mathrm{d}t} &= b_{S} \left (0 \right ) \left(1 - \kappa N \right ) S_{p} + \gamma_{G} I_{pG} + \gamma_{B} I_{pB} - \left [ d + \psi_{G} + \psi_{B} \right ] S_{p} \label{eq:dSpdt} \\
 %
-\frac{\mathrm{d}S_{c}}{\mathrm{d}t} &= b_{S} \left ( \pi_{G_{1}} \right ) \left(1 - \kappa N \right ) S_{c} + \gamma_{G_{1}} I_{G_{1}} + \gamma_{G_{2}} I_{G_{2}} - \left [ d + 
-  \left (1-\pi_{G_{1}} \right ) \psi_{G_{1}} + \psi_{G_{2}} \right ] S_{c} \\
+\frac{\mathrm{d}S_{c}}{\mathrm{d}t} &= b_{S} \left ( \pi_{G} \right ) \left(1 - \kappa N \right ) S_{c} + \gamma_{G} I_{cG} + \gamma_{B} I_{cB} - \left [ d + 
+  \left (1-\pi_{G} \right ) \psi_{G} + \psi_{B} \right ] S_{c} \label{eq:dScdt} \\
   %
-\frac{\mathrm{d}I_{p G_{i}}}{\mathrm{d}t} &= b_{G_{i}}(0) \left ( 1 - \kappa N \right ) I_{p G_{i}} + \psi_{G_{i}} S_{p} - \left [ d_{G_{i}} + \gamma_{G_{i}} \right ] I_{G_{i}} \quad \text{for }i\in(1,2)\\
+\frac{\mathrm{d}I_{p x}}{\mathrm{d}t} &= b_{x}(0) \left ( 1 - \kappa N \right ) I_{p x} + \psi_{x} S_{p} - \left [ d_{x} + \gamma_{x} \right ] I_{x} \quad \text{for }x\in(G,B)\\
 %
-\frac{\mathrm{d}I_{c G_{1}}}{\mathrm{d}t} &= b_{G_{1}}\left( \pi_{G_{1}} \right ) \left ( 1 - \kappa N \right ) I_{c G_{1}} + \left ( 1 - \pi_{G_{1}}\right ) \psi_{G_{1}} S_{c} - \left [ d_{G_{1}} + \gamma_{G_{1}} \right ] I_{c G_{1}} \\
+\frac{\mathrm{d}I_{c G}}{\mathrm{d}t} &= b_{G}\left( \pi_{G} \right ) \left ( 1 - \kappa N \right ) I_{c G} + \left ( 1 - \pi_{G}\right ) \psi_{G} S_{c} - \left [ d_{G} + \gamma_{G} \right ] I_{c G} \\
 %
-\frac{\mathrm{d}I_{c G_{2}}}{\mathrm{d}t} &= b_{G_{2}}\left( \pi_{G_{1}} \right ) \left ( 1 - \kappa N \right ) I_{c G_{2}} +  \psi_{G_{2}} S_{c} - \left [ d_{G_{1}} + \gamma_{G_{1}} \right ] I_{c G_{1}} 
+\frac{\mathrm{d}I_{c B}}{\mathrm{d}t} &= b_{B}\left( \pi_{G} \right ) \left ( 1 - \kappa N \right ) I_{c B} +  \psi_{B} S_{c} - \left [ d_{G} + \gamma_{G} \right ] I_{c G},
 \end{align}
-where $N$ is the total population size, $N = S_{c} + S_{p} +I_{pG1} + I_{pG2} + I_{cG1} + I_{cG2}$. An individual of type $y$ which expresses resistance probability $x$ against $G_{1}$ reproduces at rate 
+where the first term reflects $b_{y} \left( x \right)$ in each of the equations above reflects the fecundity of an host of type $y$ which expresses resistance probability $x$
 \begin{align}
-b_{y} \left ( x \right ) = F_{y} \mathrm{exp}\left( - c x \right),
+b_{y} \left ( x \right ) = F_{y} \mathrm{exp}\left( - c x \right) \label{eq:fecundity_function}.
 \end{align}
-where $F_{y}$ is a parameter that reflects how fecundity is affected by an individual's current state and the antibiotic treatment.  The exponential function reflects how resistance $x$ against the $G1$ FGE reduces fecundity, scaled by the cost of choosiness parameter $c$. In the system of equations \@ref(eq:dSpdt), promiscuous individuals that express no choosiness have $x=0$.
+Here, $F_{y}$ with $y \in (S,G,B)$ is a parameter that reflects how fecundity is affected by an host's current susceptible vs infected state. This is multiplied by $\mathrm{exp}\left( - c x \right)$, which reflects the fecundity cost of a resistance locus $x$ against FGEs of type $G$, where $c$ is a parameter that measures how strongly fecundity declines with resistance. Promiscuous hosts do not pay a cost as they have fecundity $b \left (0 \right )$. Moreover, fecundity is assumed to be density dependent, measured by intensity $\kappa$, where $N = S_{c} + S_{p} +I_{pG} + I_{pB} + I_{cG} + I_{cB}$ is the total density of hosts.
 
-## Different antibiotic treatments
-When individuals are exposed to an environment without antibiotic, we have $F_{S} > F_{G1} > F_{G2}$  as we assume that carrying an FGE comes at a net cost in the absence of an antibiotic. 
+Next, the term $\gamma_{y} I_{xy}$ in eqns \eqref{eq:dSpdt} and \eqref{eq:dScdt} reflects the increase in susceptible hosts due to the loss of FGEs of type $y$ by infected hosts of type $x$. Furthermore, the terms $[d + \psi_{G} + \psi_{B}]S_{p}$ and $[d + (1-\pi_{G})\psi_{G} + \psi_{B}]S_{c}$ reflect removal of promiscuous and choosy hosts respectively, due to (i) death at rate $d$, (ii) infection by a good FGE at rate $\psi_{G}$ and (iii) infection by a better FGE at rate $\psi_{B}$. 
 
-When individuals are exposed to a single antibiotic to which $G_{1}$ and $G_{2}$ both provide protection, we have $F_{G1} \geq F_{G2} > F_{S}$
- 
-When individuals are exposed to a single antibiotic to which only $G_{2}$ provides protection, we have $F_{G2} > F_{S} > F_{G1}$
+The parameter $\psi_{y}$ denotes the force of infection (sensu pp. 17-18 in @Keeling2011).Similar to @Gandon2013, we consider two versions of the model: the first includes epidemiological feedbacks, so that the force of infection of FGE $y$ is dependent on the number of infected hosts $\psi_{y} = \beta_{y} \left (I_{py} + I_{cy} \right)$ and reflects a scenario where infectious individuals result in new infections. The second version considers no epidemiological feedbacks, so that $\psi_{y} = \beta_{y}$, reflecting a scenario in which a certain amount of phage is available to infect hosts, regardless of the number of infected hosts. The latter may apply when phages continuously enter the system through external forcing, such as migration. We find that epidemiological feedbacks have a strong influence on the maintenance of the choosy host.
 
-When individuals are exposed to a mixture of antibiotics to which only $G_{2}$ provides protection, we have $F_{G2} > F_{S} > F_{G1}$
+
+## Short-term vs long-term dynamics with epidemiological feedback
+The first and second columns of Figure \ref{fig:longtermdemog} compare the short-term dynamics (see main text Figure 1) and the long-term dynamics in the presence of epidemiological feedbacks, i.e., when the force of infection $\psi_{x}$ of FGE type $x$ is a function of the density of hosts that are infected by the FGE, $\psi_{x} = \beta_{x} (I_{cx} + I_{px})$, where $\beta$ is a parameter reflecting the force of infection of a single infected host. 
+
+We find that while our model predicts the growth of the choosy strain in the short term (once MGEs of type $B$ are present), in the long-term the choosy strain will always go extinct (e.g., compare Figure \ref{fig:longtermdemog}D vs E and Figure \ref{fig:longtermdemog}G vs H). In case only FGE $B$ is present (Figures \ref{fig:longtermdemog}D-F), the choosy strain may initially grow, but is outcompeted by the promiscuous strain as the latter does not pay a cost of resistance. 
+
+In case a mixture of FGEs is present (Figure \ref{fig:longtermdemog}G-I), the choosy strain first grows in frequency over and above the promiscuous strain, as it benefits from being exclusively infected by $B$ FGEs, whereas the promiscuous strain is infected by a mixture of $B$ and $G$. However, due to epidemiological feedbacks, the frequency of the better FGE $B$ very rapidly increases in frequency over and above the $G$ FGE (see panel I). Subsequently, when the latter FGE goes extinct, again there is no variation in FGEs, so that the eventually the promiscuous strain prevails as it does not pay a cost of resistance .
+
+![Short vs long-term dynamics in the presence of epidemiological feedbacks. First column: short-term dynamics as in Fig 1 main text. Second column: long-term dynamics. Third column: densities of G and B FGEs.  $\beta_{G}=\beta_{B}=10$, $c=0.02$, $\pi=1.0$, $d_{S}=d_{I_{G}}=5$, $d_{I_{B}}=1$, $F=1$, $F_{G}=6$, $F_{B}=10$](img/longterm_dynamics/plot_longterm_choosy_vs_promiscuous_dg1.pdf){#fig:longtermdemog}
+
+## Short-term vs long-term dynamics without epidemiological feedback
+Figure \ref{fig:shorttermdemog0} is similar to Figure 1, but it considers a scenario in which epidemiological feedbacks are absent. We find that choosy strains are able to get a larger foothold in the population without any concomitant decline (compare Fig \ref{fig:shorttermdemog0}D with Figure 1D in the main text). This is because the lack of epidemiological feedback implies that per time step a fixed amount $\psi_{G}$ and $\psi_{B}$ of FGEs is entered in the system. Consequently, as long as susceptible hosts are available to infect, FGEs of both types will be maintained, thus conserving the choosy host strain.
+
+![Short term dynamics without epidemiological feedbacks, equivalent to Figure 1 in the main text. Parameters: $\psi_{G}=\psi_{B}=10$, $c=0.02$, $\pi=1.0$,  $d_{S}=d_{I_{G}}=5$, $d_{I_{B}}=1$, $F=1$, $F_{G}=6$, $F_{B}=10$](img/growth_cp/plot_choosy_vs_promiscuous_demogfb0.pdf){#fig:shorttermdemog0}
+
+In the long-term (see Figure \ref{fig:longtermdemog0}), we find that choosiness can be stably maintained in the absence of epidemiological feedbacks (Figure \ref{fig:longtermdemog0}G-I). The maintenance of choice is perhaps surprising, as again see that variation in FGEs is minimized in the long term (see Figure \ref{fig:longtermdemog0}I). However, in contrast to Figure \ref{fig:longtermdemog}I, there are still low numbers of FGE of type $G$ available, at an order of $10^{-2}$, whereas  densities are at an order of $10^{-300}$ in the presence of epidemiological feedbacks.
+
+
+![Short vs long-term dynamics without epidemiological feedbacks. First column: short-term dynamics as in Fig 1 main text. Second column: long-term dynamics. Third column: densities of G and B FGEs. Parameters: see Figure \ref{fig:shorttermdemog0}. ](img/longterm_dynamics/plot_longterm_choosy_vs_promiscuous_dg0.pdf){#fig:longtermdemog0}
+
+
 ## References

@@ -31,6 +31,8 @@ class Solver
             ,{0.0,0.0}
         };
 
+        double popsize_superinfected[2] = {0,0};
+
         double N = 0.0;
 
         unsigned long time_step = 0;
@@ -41,11 +43,20 @@ class Solver
         void update_N();
 
         double dSdt(HostType host_idx) const;
+
         double dIdt(HostType host_idx, 
                 PhageType phage_idx) const;
 
+        double dIGBdt(HostType host_idx) const;
+
         double b(HostType host_idx) const;
+
+        // fecundity of infected individuals
         double b(HostType host_idx, PhageType phage_idx) const;
+
+        // fecundity of superinfected individuals
+        double b(HostType host_idx, PhageType phage1_idx, 
+                PhageType phage2_idx) const;
 
         void write_data();
         void write_data_headers();
