@@ -30,6 +30,7 @@ find.params <- function(filename) {
 
 xvar <- "time"
 
+# structure of the graph in JSON
 jsonstuff <- paste0('[
     {"xvar" : "',xvar,'",
     "yvar" : ["Sp","Sc"]
@@ -41,6 +42,14 @@ jsonstuff <- paste0('[
     {
         "xvar" : "',xvar,'",
         "yvar" : ["Ipg1","Icg1"]
+    },
+    {
+        "xvar" : "',xvar,'",
+        "yvar" : ["Ipg1g2","Icg1g2"]
+    },
+    {
+        "xvar" : "',xvar,'",
+        "yvar" : ["f_choosy","f_B"]
     },
     {
         "xvar" : "',xvar,'",
@@ -80,14 +89,30 @@ data.tibble.orig <- read_delim(file=file.name
         ,n_max=param.line-1
         ,col_names=T)
 
-data.tibble.orig <- mutate(data.tibble.orig,
-        Ipg2 = Ipg2 
-        ,Choosy=Sc + Icg1 + Icg2
-        ,Promiscuous=Sp + Ipg1 + Ipg2
-        ,log10Choosy=log10(Sc + Icg1 + Icg2)
-        ,log10Promiscuous=log10(Sp + Ipg1 + Ipg2)
+# get the parameters
+data.tibble.params <- read_delim(file=file.name
+        ,delim=";"
+        ,skip=param.line
+        ,col_names=c("name","value")
         )
 
+# transpose the tibble with the parameters
+params <- data.tibble.params %>% pivot_wider(
+        names_from = name
+        ,values_from = value)
+
+# add some columns 
+data.tibble.orig <- mutate(data.tibble.orig,
+        ,Choosy=Sc + Icg1 + Icg2 + Icg1g2
+        ,Promiscuous=Sp + Ipg1 + Ipg2 + Ipg1g2
+        ,f_choosy=(Sc + Icg1 + Icg2 + Icg1g2)/N
+        ,f_B=(Icg2 + Ipg2 + 0.5 * Ipg1g2 + 0.5 * Icg1g2)/(Icg1 + Ipg1 + Icg2 + Ipg2 + Ipg1g2 + Icg1g2)
+        ,log10Choosy=log10(Sc + Icg1 + Icg2 + Icg1g2)
+        ,log10Promiscuous=log10(Sp + Ipg1 + Ipg2 + Ipg1g2)
+        )
+
+# if this data set is massive, reduce by plotting
+# fewer rows
 if (nrow(data.tibble.orig) > 50000)
 {
     data.tibble <- filter(data.tibble.orig, time %% 100 == 0)
@@ -95,8 +120,6 @@ if (nrow(data.tibble.orig) > 50000)
 {
     data.tibble <- data.tibble.orig
 }
-
-
 
 plot.structure <- fromJSON(jsonstuff, simplifyVector = F)
 
@@ -107,6 +130,7 @@ plot.list <- list(rep(NA,times=plot.structure.l*2))
 
 plot.list.idx <- 1
 
+# first plot stuff for the tibble as a whole
 for (plot_struct_idx in 1:plot.structure.l)
 {
     # get the (potential list of) y variable(s)
@@ -147,6 +171,8 @@ for (plot_struct_idx in 1:plot.structure.l)
 
 max_t <- 20000
 
+
+# then plot things from a subset
 data.tibble.sub <- data.tibble.orig[data.tibble.orig$time < max_t,]
 
 for (plot_struct_idx in 1:plot.structure.l)
@@ -187,7 +213,14 @@ for (plot_struct_idx in 1:plot.structure.l)
     plot.list.idx <- plot.list.idx + 1
 }
 
-wrap_plots(plot.list,ncol=1)
+wrap_plots(plot.list,ncol=1) + plot_annotation(
+        title=paste0("demogFB: ",params["demog_feedback"],
+                ", sigma: ",params["sigma"],
+                ", IpGt0: ",data.tibble.orig[1,"Ipg1"],
+                ", IpBt0: ",data.tibble.orig[1,"Ipg2"],
+                ", IcGt0: ",data.tibble.orig[1,"Icg1"],
+                ", IcBt0: ",data.tibble.orig[1,"Icg2"]
+                ))
 
 file.name <- paste0("graph_",basename(file.name),".pdf")
 

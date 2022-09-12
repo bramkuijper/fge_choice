@@ -16,18 +16,22 @@ class Parameters
         // fecundity of individuals infected with 
         // G1 or G2
         double F[2] = {0.0,0.0};
+        double FGB = 0.0;
         double pi = 1.0;
         double c = 1.0;
         double kappa = 0.001;
+        double sigma = 0.0;
         double dS[2] = {0.0,0.0};
         double dI[2][2] = {{0.0,0.0},{0.0,0.0}};
+        double dBG[2] = {0.0,0.0};
 
         std::string base_name = "sim_fixed_resistance";
 
         // initial population size
         // S_p, S_c, I_pg1, I_pg2, I_cg1, I_cg2
         double init_popsize[2] = {100,100};
-        double init_popsize_infected[2][2] = {{1,2},{3,4}};
+        double init_popsize_infected[2][2] = {{1,1},{1,1}};
+        double init_popsize_superinfected[2] = {0,0};
 
         double eul = 0.001;
 

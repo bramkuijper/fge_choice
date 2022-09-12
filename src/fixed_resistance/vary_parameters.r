@@ -29,8 +29,11 @@ params$dICG2 = 1
 
 params$init_popsize_P <- 30
 params$init_popsize_C <- 30
+
 params$init_popsize_PG1 <- c(0,1)
 params$init_popsize_PG2 <- c(0,1)
+params$init_popsize_PpG1G2 <- 0
+params$init_popsize_PcG1G2 <- 0
 
 # we just want G1 and G2 to vary initial popsizes
 # not all combinations of CG1 and CG2 and PG1 and PG2
@@ -41,8 +44,9 @@ params$init_popsize_PG2 <- c(0,1)
 params$pi = 1.0
 params$c = 0.02
 params$kappa = 0.001
+params$sigma = c(0,1)
 params$eul = 0.0001
-params$demog_feedback = c(1)
+params$demog_feedback = c(0,1)
 
 all.params <- as.data.frame(expand.grid(params))
 

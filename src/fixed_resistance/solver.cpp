@@ -19,6 +19,10 @@ Solver::Solver(Parameters &parms) :
     {
         // initialize population sizes of the susceptibles
         popsize[host_idx] = params.init_popsize[host_idx];
+        
+        // initialize population sizes of the superinfected hosts
+        popsize_superinfected[host_idx] = 
+            params.init_popsize_superinfected[host_idx];
 
         for (int phage_idx = 0; phage_idx < 2; ++phage_idx)
         {
@@ -30,6 +34,7 @@ Solver::Solver(Parameters &parms) :
 
     // variables to store the updated values in the time series
     double popsize_tplus1[2] = {0.0,0.0};
+    double popsize_superinfected_tplus1[2] = {0.0,0.0};
     double popsize_infected_tplus1[2][2] = {{0.0,0.0},{0.0,0.0}};
 
     // aux variables to keep track of indices
@@ -71,6 +76,32 @@ Solver::Solver(Parameters &parms) :
                         << " and susceptible type "
                         << (host_type == C ? "C" : "P")
                         << " with value " << popsize_tplus1[host_type_idx];
+                        
+                throw std::range_error(msg.str());
+            }
+
+            // now update the superinfected host numbers
+            // perform the actual updating
+            popsize_superinfected_tplus1[host_type_idx] = 
+                popsize_superinfected[host_type_idx] + 
+                    params.eul * dIGBdt(host_type);
+
+            // check for boundary
+            if (popsize_superinfected_tplus1[host_type_idx] < 0.0)
+            {
+                popsize_superinfected_tplus1[host_type_idx] = 0.0;
+            }
+            
+            // check whether values are sane
+            if (!std::isfinite(popsize_superinfected_tplus1[host_type_idx]))
+            {
+                std::stringstream msg;
+
+                msg << "isfinite() error at time step "
+                        << time_step
+                        << " and superinfected type "
+                        << (host_type == C ? "C" : "P")
+                        << " with value " << popsize_superinfected_tplus1[host_type_idx];
                         
                 throw std::range_error(msg.str());
             }
@@ -125,6 +156,16 @@ Solver::Solver(Parameters &parms) :
             popsize[host_type_idx] = 
                 popsize_tplus1[host_type_idx];
 
+            if (std::abs(popsize_superinfected[host_type_idx] -
+                        popsize_superinfected_tplus1[host_type_idx]) > 
+                    parms.vanish_threshold)
+            {
+                converged = false;
+            }
+            
+            popsize_superinfected[host_type_idx] = 
+                popsize_superinfected_tplus1[host_type_idx];
+
             for (int phage_type_idx = 0; 
                     phage_type_idx < 2; ++phage_type_idx)
             {
@@ -168,6 +209,7 @@ void Solver::write_data()
             host_type_idx < 2; ++host_type_idx)
     {
         data_file << popsize[host_type_idx] << ";";
+        data_file << popsize_superinfected[host_type_idx] << ";";
 
         for (int phage_type_idx = 0; 
                 phage_type_idx < 2; ++phage_type_idx)
@@ -182,7 +224,7 @@ void Solver::write_data()
 
 void Solver::write_data_headers()
 {
-    data_file << "time;Sp;Ipg1;Ipg2;Sc;Icg1;Icg2;N;" << std::endl;
+    data_file << "time;Sp;Ipg1g2;Ipg1;Ipg2;Sc;Icg1g2;Icg1;Icg2;N;" << std::endl;
 }
 
 void Solver::write_parameters()
@@ -225,8 +267,10 @@ void Solver::write_parameters()
     }
 
     data_file << "pi;" << params.pi << std::endl
+        << "FGB;" << params.FGB << std::endl
         << "c;" << params.c << std::endl
         << "kappa;" << params.kappa << std::endl
+        << "sigma;" << params.sigma << std::endl
         << "eul;" << params.eul << std::endl
         << "demog_feedback;" << params.demog_feedback << std::endl
         << "vanish_threshold;" << params.vanish_threshold << std::endl;
@@ -240,6 +284,7 @@ void Solver::update_N()
             host_type_idx < 2; ++host_type_idx)
     {
         N += popsize[host_type_idx];
+        N += popsize_superinfected[host_type_idx];
 
         for (int phage_type_idx = 0; 
                 phage_type_idx < 2; ++phage_type_idx)
@@ -285,6 +330,16 @@ double Solver::b(HostType host_idx, PhageType phage_idx) const
                         0.0)));
 }
 
+double Solver::b(HostType host_idx, PhageType phage1_idx, PhageType phage2_idx) const
+{
+    return(params.FGB * std::exp(-params.c * (
+                    host_idx == C ? 
+                        params.pi 
+                        : 
+                        0.0)));
+}
+
+// infected differential
 double Solver::dIdt(HostType host_idx, PhageType phage_idx) const
 {
     return(b(host_idx, phage_idx) * (1.0 - params.kappa * N) * 
@@ -293,8 +348,33 @@ double Solver::dIdt(HostType host_idx, PhageType phage_idx) const
                 (host_idx == C && phage_idx == G1 ? 1.0 - params.pi : 1.0) * 
                 (params.demog_feedback ? popsize_infected[P][phage_idx] + 
                                         popsize_infected[C][phage_idx] : 1.0)
-                - (params.gamma[host_idx][phage_idx] + params.dI[host_idx][phage_idx]) * 
-                        popsize_infected[host_idx][phage_idx]
+                - (params.gamma[host_idx][phage_idx] + params.dI[host_idx][phage_idx]
+                        + params.sigma * params.psi[!phage_idx] * 
+                        (host_idx == C && phage_idx != G1 ? 1.0 - params.pi : 1.0) *
+                            (params.demog_feedback ? 
+                                popsize_infected[C][!phage_idx]
+                                   + popsize_infected[P][!phage_idx]
+                                :
+                                1.0)
+                    ) * popsize_infected[host_idx][phage_idx]
+             + params.gamma[host_idx][!phage_idx] * popsize_superinfected[host_idx]
             );
 }
 
+// superinfected differential
+double Solver::dIGBdt(HostType host_idx) const
+{
+    return(b(host_idx, G1, G2) * (1.0 - params.kappa * N) *
+            popsize_superinfected[host_idx]
+            // infection of a IxG2 host with G1
+            + params.sigma * params.psi[G1] * popsize_infected[host_idx][G2] *
+                (host_idx == C ? 1.0 - params.pi : 1.0) *
+                (params.demog_feedback ? popsize_infected[host_idx][G1] + 
+                popsize_infected[!host_idx][G1] : 1.0)
+            // infection of a IxG1 host with G2
+            + params.sigma * params.psi[G2] * popsize_infected[host_idx][G1] *
+                (params.demog_feedback ? popsize_infected[host_idx][G2] +
+                 popsize_infected[!host_idx][G2] : 1.0)
+            - (params.gamma[host_idx][G1] + params.gamma[host_idx][G2] 
+                + params.dBG[host_idx]) * popsize_superinfected[host_idx]);
+}
