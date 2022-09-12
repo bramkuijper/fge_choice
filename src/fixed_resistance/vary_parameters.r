@@ -44,7 +44,7 @@ params$init_popsize_PcG1G2 <- 0
 params$pi = 1.0
 params$c = seq(0,0.04,length.out = 50)
 params$kappa = 0.001
-params$sigma = c(0,1)
+params$sigma = c(0,0.25,0.5,1)
 params$eul = 0.0001
 params$demog_feedback = c(0)
 
