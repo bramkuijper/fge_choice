@@ -15,7 +15,7 @@ params$psiG1 = 10
 params$psiG2 = 10
 
 params$FG1 = 6
-params$FG2 = 10
+params$FG2 = seq(6,10,length.out=50)
 
 d_overall <- 5
 
@@ -30,8 +30,8 @@ params$dICG2 = 1
 params$init_popsize_P <- 30
 params$init_popsize_C <- 30
 
-params$init_popsize_PG1 <- c(0,1)
-params$init_popsize_PG2 <- c(0,1)
+params$init_popsize_PG1 <- c(1)
+params$init_popsize_PG2 <- c(1)
 params$init_popsize_PpG1G2 <- 0
 params$init_popsize_PcG1G2 <- 0
 
@@ -42,11 +42,11 @@ params$init_popsize_PcG1G2 <- 0
 #params$init_popsize_CG2 <- 1
 
 params$pi = 1.0
-params$c = 0.02
+params$c = seq(0,0.04,length.out = 50)
 params$kappa = 0.001
 params$sigma = c(0,1)
 params$eul = 0.0001
-params$demog_feedback = c(0,1)
+params$demog_feedback = c(0)
 
 all.params <- as.data.frame(expand.grid(params))
 
