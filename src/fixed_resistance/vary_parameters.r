@@ -67,4 +67,5 @@ all.params[all.params$demog_feedback == 0,c("psiG1","psiG2")] <- all.params[all.
 make.batch.file(
                 parameter_list=all.params
                 ,executable_path="./solver.exe"
+                ,output_file_prefix="output"
                 ,n_replicates = 1)

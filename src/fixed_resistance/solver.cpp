@@ -45,7 +45,7 @@ Solver::Solver(Parameters &parms) :
 
     // numerically solve over time 
     for (time_step = 0; 
-            time_step < parms.max_ecol_time; ++time_step)
+            time_step <= parms.max_ecol_time; ++time_step)
     {
         // vary host types
         for (int host_type_idx = 0; 
