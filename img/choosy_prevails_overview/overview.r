@@ -46,3 +46,16 @@ pg1 <- ggplot() +
 #  geom_raster(mapping=aes(fill=Choosy-Promiscuous)) +
 
 ggsave(filename="overview_fge_choice.pdf")
+
+dat.super <- read_delim(file="summary_superinfection.csv", delim=";")
+
+dat.super <- mutate(dat.super
+        ,Promiscuous=Sp + Ipg1 + Ipg2 + Ipg1g2
+        ,Choosy=Sc + Icg1 + Icg2 + Icg1g2)
+
+plot.super <- ggplot(data=dat.super
+        ,mapping=aes(x=FG2/FG1,y=c)) +
+        geom_tile(mapping=aes(fill=Choosy-Promiscuous)) +
+        facet_grid(cols=vars(sigma))
+
+ggsave(filename="overview_choice_superinfection.pdf")

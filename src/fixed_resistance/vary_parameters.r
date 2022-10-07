@@ -6,16 +6,16 @@ library("tibble")
 # start a list of parameters
 params <- list()
 
-params$gamma_CG1 = 1 
-params$gamma_CG2 = 1  
-params$gamma_PG1 = 1  
-params$gamma_PG2 = 1 
+params$gamma_CG1 = 2 
+params$gamma_CG2 = 2  
+params$gamma_PG1 = 2  
+params$gamma_PG2 = 2 
 
 params$psiG1 = 10
 params$psiG2 = 10
 
 params$FG1 = 6
-params$FG2 = seq(6,10,length.out=50)
+params$FG2 = 10
 
 d_overall <- 5
 
@@ -41,10 +41,10 @@ params$init_popsize_PcG1G2 <- 0
 #params$init_popsize_CG1 <- 0
 #params$init_popsize_CG2 <- 1
 
-params$pi = 1.0
-params$c = seq(0,0.04,length.out = 50)
+params$pi = 0.95
+params$c = 0.01
 params$kappa = 0.001
-params$sigma = c(0,0.25,0.5,1)
+params$sigma = 0.02
 params$eul = 0.0001
 params$demog_feedback = c(0)
 
