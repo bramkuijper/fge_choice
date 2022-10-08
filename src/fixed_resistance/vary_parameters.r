@@ -3,6 +3,10 @@
 library("simulation.utils")
 library("tibble")
 
+# script to permutate parameter combinations
+# that will be fed to the numerical simulation of
+# the ODE in C++
+
 # start a list of parameters
 params <- list()
 
@@ -50,7 +54,7 @@ params$demog_feedback = c(0)
 
 all.params <- as.data.frame(expand.grid(params))
 
-# use tibbles' add_column function
+# we need to assign the same initial population sizes to CG1 and CG2
 all.params <- add_column(all.params, 
         init_popsize_CG1 = all.params$init_popsize_PG1, 
         init_popsize_CG2 = all.params$init_popsize_PG2, 
