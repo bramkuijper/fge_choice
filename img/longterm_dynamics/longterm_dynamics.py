@@ -139,7 +139,7 @@ def single_panel(
             ,id_vars=["time"]
             ,value_vars=["Choosy","Promiscuous"])
 
-    colors = ["#cc79a7","#3873b2"]
+    colors = ["#831d50","#85cbee"]
 
     sns.set_palette(sns.color_palette(colors))
     
@@ -406,9 +406,9 @@ for demog_feedback_i in demog_feedback:
             filename=file_choosy_outperforms)
 
 
-    plt.figtext(x=-0.05, y= 0.8, s= "Only MGE G\n" + "→")
-    plt.figtext(x=-0.05, y= 0.5, s= "Only MGE B\n" + "→")
-    plt.figtext(x=-0.05, y= 0.15, s= "Mixtures of\n" + "MGEs" + "→")
+    plt.figtext(x=-0.05, y= 0.8, s= "Only MGE B\n" + "→")
+    plt.figtext(x=-0.05, y= 0.5, s= "Only MGE G\n" + "→")
+    plt.figtext(x=-0.05, y= 0.15, s= "Both \n" + "MGEs" + "→")
 
     figname = "plot_longterm_choosy_vs_promiscuous_dg" + str(demog_feedback_i) + ".pdf"
 

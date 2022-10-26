@@ -10,10 +10,10 @@ library("tibble")
 # start a list of parameters
 params <- list()
 
-params$gamma_CG1 = 2 
-params$gamma_CG2 = 2  
-params$gamma_PG1 = 2  
-params$gamma_PG2 = 2 
+params$gamma_CG1 = 1 
+params$gamma_CG2 = 1  
+params$gamma_PG1 = 1  
+params$gamma_PG2 = 1 
 
 params$psiG1 = 10
 params$psiG2 = 10
@@ -34,7 +34,7 @@ params$dICG2 = 1
 params$init_popsize_P <- 30
 params$init_popsize_C <- 30
 
-params$init_popsize_PG1 <- c(1)
+params$init_popsize_PG1 <- c(0)
 params$init_popsize_PG2 <- c(1)
 params$init_popsize_PpG1G2 <- 0
 params$init_popsize_PcG1G2 <- 0
@@ -45,12 +45,12 @@ params$init_popsize_PcG1G2 <- 0
 #params$init_popsize_CG1 <- 0
 #params$init_popsize_CG2 <- 1
 
-params$pi = 0.95
-params$c = 0.01
+params$pi = c(0.25,1.0)
+params$c = 0.02
 params$kappa = 0.001
-params$sigma = 0.02
+params$sigma = 0.0
 params$eul = 0.0001
-params$demog_feedback = c(0)
+params$demog_feedback = c(1)
 
 all.params <- as.data.frame(expand.grid(params))
 

@@ -134,7 +134,10 @@ def single_panel(
             ,id_vars=["time"]
             ,value_vars=["Choosy","Promiscuous"])
 
-    colors = ["#cc79a7","#3873b2"]
+
+
+    # colors of choosy and promiscuous
+    colors = ["#831d50","#85cbee"]
 
     sns.set_palette(sns.color_palette(colors))
     
@@ -230,7 +233,7 @@ single_panel(gsobject=gs,
         col=1,
         ylim=ylim,
         tmax=tmax,
-        title="Only MGE G",
+        title="Only MGE B",
         filename=file_phageG)
 
 single_panel(gsobject=gs, 
@@ -238,7 +241,7 @@ single_panel(gsobject=gs,
         col=2,
         ylim=ylim,
         tmax=tmax,
-        title="Only MGE B",
+        title="Only MGE G",
         filename=file_choosy_underperforms)
 
 single_panel(gsobject=gs, 
@@ -246,7 +249,7 @@ single_panel(gsobject=gs,
         col=3,
         ylim=ylim,
         tmax=tmax,
-        title="Mixture of MGEs",
+        title="Both MGEs",
         filename=file_choosy_outperforms,
         legend=True)
 

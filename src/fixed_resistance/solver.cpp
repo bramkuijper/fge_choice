@@ -205,18 +205,37 @@ void Solver::write_data()
 {
     data_file << time_step << ";";
 
+    // totals for each of the categories c and p
+    double totals_pc[] = {0.0,0.0};
+
+    totals_pc[C] = popsize[C] + popsize_superinfected[C] + 
+        popsize_infected[C][G1] + popsize_infected[C][G2];
+
+    totals_pc[P] = popsize[P] + popsize_superinfected[P] +
+        popsize_infected[P][G1] + popsize_infected[P][G2];
+
     for (int host_type_idx = 0; 
             host_type_idx < 2; ++host_type_idx)
     {
+        // write out numbers of susceptibles that carry either c or b
         data_file << popsize[host_type_idx] << ";";
+
+        // write out conditional frequencies
+        // p_S|c and p_S|p
+        data_file << popsize[host_type_idx] / totals_pc[host_type_idx] << ";";
+
         data_file << popsize_superinfected[host_type_idx] << ";";
 
         for (int phage_type_idx = 0; 
                 phage_type_idx < 2; ++phage_type_idx)
         {
             data_file << popsize_infected[host_type_idx][phage_type_idx] << ";";
-        }
 
+            // write out conditional frequencies
+            // p_G|c, p_B|c, p_G|p, p_B|p
+            data_file << popsize_infected[host_type_idx][phage_type_idx] / 
+                totals_pc[host_type_idx] << ";";
+        }
     }
 
     data_file << N << ";" << std::endl;
@@ -224,8 +243,28 @@ void Solver::write_data()
 
 void Solver::write_data_headers()
 {
-    data_file << "time;Sp;Ipg1g2;Ipg1;Ipg2;Sc;Icg1g2;Icg1;Icg2;N;" << std::endl;
-}
+    data_file << "time;";
+
+    for (int host_type_idx = 0; 
+            host_type_idx < 2; ++host_type_idx)
+    {
+        data_file << "S" << (host_type_idx == P ? "P" : "C") << ";";
+        data_file << "pS" << (host_type_idx == P ? "P" : "C") << ";";
+        data_file << "I" << (host_type_idx == P ? "P" : "C") << "G1G2;";
+        
+        for (int phage_type_idx = 0; 
+                phage_type_idx < 2; ++phage_type_idx)
+        {
+            data_file << "I" << (host_type_idx == P ? "P" : "C") << 
+                (phage_type_idx == G1 ? "G1" : "G2") << ";";
+
+            data_file << "p" << (phage_type_idx == G1 ? "G1" : "G2") <<
+                (host_type_idx == P ? "P" : "C") << ";";
+        }
+    }
+
+    data_file << "N;" << std::endl;
+} // end write_data_headers()
 
 void Solver::write_parameters()
 {

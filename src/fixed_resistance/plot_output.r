@@ -33,23 +33,43 @@ xvar <- "time"
 # structure of the graph in JSON
 jsonstuff <- paste0('[
     {"xvar" : "',xvar,'",
-    "yvar" : ["Sp","Sc"]
+    "yvar" : ["SP","SC"]
     },
     {
         "xvar" : "',xvar,'",
-        "yvar" : ["Icg2","Ipg2"]
+        "yvar" : ["ICG2","IPG2"]
     },
     {
         "xvar" : "',xvar,'",
-        "yvar" : ["Ipg1","Icg1"]
+        "yvar" : ["IPG1","IPG1"]
     },
     {
         "xvar" : "',xvar,'",
-        "yvar" : ["Ipg1g2","Icg1g2"]
+        "yvar" : ["IPG1G2","ICG1G2"]
     },
     {
         "xvar" : "',xvar,'",
-        "yvar" : ["f_choosy","f_B"]
+        "yvar" : ["pSP","pSC"],
+        "ylim" : [-0.05,1.05]
+    },
+    {
+        "xvar" : "',xvar,'",
+        "yvar" : ["pG1P","pG2P"],
+        "ylim" : [-0.05,1.05]
+    },
+    {
+        "xvar" : "',xvar,'",
+        "yvar" : ["pG1C","pG2C"],
+        "ylim" : [-0.05,1.05]
+    },
+    {
+        "xvar" : "',xvar,'",
+        "yvar" : ["p_GcMinusGp", "p_ScMinusSp", "p_BcMinusBp"],
+        "ylim" : [-0.5, 0.5]
+    },
+    {
+        "xvar" : "',xvar,'",
+        "yvar" : ["f_choosy","f_G"]
     },
     {
         "xvar" : "',xvar,'",
@@ -101,14 +121,19 @@ params <- data.tibble.params %>% pivot_wider(
         names_from = name
         ,values_from = value)
 
+print(head(data.tibble.orig))
+
 # add some columns 
 data.tibble.orig <- mutate(data.tibble.orig,
-        ,Choosy=Sc + Icg1 + Icg2 + Icg1g2
-        ,Promiscuous=Sp + Ipg1 + Ipg2 + Ipg1g2
-        ,f_choosy=(Sc + Icg1 + Icg2 + Icg1g2)/N
-        ,f_B=(Icg2 + Ipg2 + 0.5 * Ipg1g2 + 0.5 * Icg1g2)/(Icg1 + Ipg1 + Icg2 + Ipg2 + Ipg1g2 + Icg1g2)
-        ,log10Choosy=log10(Sc + Icg1 + Icg2 + Icg1g2)
-        ,log10Promiscuous=log10(Sp + Ipg1 + Ipg2 + Ipg1g2)
+        ,Choosy=SC + ICG1 + ICG2 + ICG1G2
+        ,Promiscuous=SP + IPG1 + IPG2 + IPG1G2
+        ,f_choosy=(SC + ICG1 + ICG2 + ICG1G2)/N
+        ,f_G=(ICG2 + IPG2 + 0.5 * IPG1G2 + 0.5 * ICG1G2)/(ICG1 + IPG1 + ICG2 + IPG2 + IPG1G2 + ICG1G2)
+        ,log10Choosy=log10(SC + ICG1 + ICG2 + ICG1G2)
+        ,log10Promiscuous=log10(SP + IPG1 + IPG2 + IPG1G2)
+        ,p_GcMinusGp=(pG2C - pG2P)
+        ,p_ScMinusSp=(pSC - pSP)
+        ,p_BcMinusBp=(pG1C - pG1P)
         )
 
 # if this data set is massive, reduce by plotting
@@ -216,10 +241,10 @@ for (plot_struct_idx in 1:plot.structure.l)
 wrap_plots(plot.list,ncol=1) + plot_annotation(
         title=paste0("demogFB: ",params["demog_feedback"],
                 ", sigma: ",params["sigma"],
-                ", IpGt0: ",data.tibble.orig[1,"Ipg1"],
-                ", IpBt0: ",data.tibble.orig[1,"Ipg2"],
-                ", IcGt0: ",data.tibble.orig[1,"Icg1"],
-                ", IcBt0: ",data.tibble.orig[1,"Icg2"]
+                ", IpGt0: ",data.tibble.orig[1,"IPG1"],
+                ", IpBt0: ",data.tibble.orig[1,"IPG2"],
+                ", IcGt0: ",data.tibble.orig[1,"ICG1"],
+                ", IcBt0: ",data.tibble.orig[1,"ICG2"]
                 ))
 
 file.name <- paste0("graph_",basename(file.name),".pdf")
