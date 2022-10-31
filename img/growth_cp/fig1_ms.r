@@ -1,6 +1,11 @@
 library("tidyverse")
+path <- "/Users/ALWK201/Projects/fge_choice/src/fixed_resistance"
 
-all_files <- list.files(path=".",pattern="output_.*",recursive = F)
+all_files <- list.files(
+        path=path
+        ,pattern="^output_.*"
+        ,recursive = F
+        ,full.names=T)
 
 # obtain the final line of the actual simulation data
 # of each file
@@ -60,6 +65,11 @@ if (!exists("all_data"))
         
         # add file name
         current_data[,"type"] <- file
+
+        # make names uppercase
+        names(current_data) <- toupper(names(current_data))
+
+
         
         label <- "Both MGEs"
         order <- "d"
@@ -68,15 +78,15 @@ if (!exists("all_data"))
         # on initial conditions, note 1st row subset select) and label accordingly
         # here Ipg1 is promiscuous bad FGE, Ipg2 is promiscuous good FGE
         # Icg1 is choosy bad FGE, Ipg2 is choosy good FGE
-        if (current_data[1,"Ipg1"] < 1 && current_data[1,"Ipg2"] < 1)
+        if (current_data[1,"IPG1"] < 1 && current_data[1,"IPG2"] < 1)
         {
             label <- "No MGE"
             order <- "a"
-        } else if (current_data[1,"Ipg1"] < 1 && current_data[1,"Ipg2"] > 1)
+        } else if (current_data[1,"IPG1"] < 1 && current_data[1,"IPG2"] > 1)
         {
             label <- "Only MGE G"
             order <- "c"
-        } else if (current_data[1,"Ipg1"] > 1 && current_data[1,"Ipg2"] < 1)
+        } else if (current_data[1,"IPG1"] > 1 && current_data[1,"IPG2"] < 1)
         {
             label <- "Only MGE B"
             order <- "b"
@@ -95,9 +105,9 @@ tmax <- 20000
 
 # subset data dependent on tmax and then pivot_longer
 # to make sure we can plot lines
-all_data <- all_data %>% filter(time < tmax) %>% mutate(
-    choosy=Icg1 + Icg2 
-    ,promiscuous=Ipg1+Ipg2
+all_data <- all_data %>% filter(TIME < tmax) %>% mutate(
+    choosy=ICG1 + ICG2 
+    ,promiscuous=IPG1+IPG2
 )
 
 all_data_t <- all_data %>% pivot_longer(
@@ -118,7 +128,7 @@ the_labels <- c(
 )
 
 ggplot(data=all_data_t
-       ,mapping=aes(x=time
+       ,mapping=aes(x=TIME
                     ,y=Frequency)) +
     geom_line(mapping=aes(colour=Type)) +
     scale_fill_brewer(palette = "Set2") +
