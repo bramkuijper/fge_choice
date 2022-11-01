@@ -49,7 +49,34 @@ get_parameters <- function(file_name)
     return(vals)
 }
 
-get_data <- function(path)
+# find out what the type is of this data
+find_out_type <- function(dataset)
+{
+    label <- "mixed"
+    order <- 4
+
+    if (dataset[1,"IPG1"] < 1 && dataset[1,"IPG2"] < 1)
+    {
+        label <- "none"
+        order <- 1
+    } else if (dataset[1,"IPG1"] < 1 && dataset[1,"IPG2"] > 1)
+    {
+        label <- "single"
+        order <- 3
+    } else if (dataset[1,"IPG1"] > 1 && dataset[1,"IPG2"] < 1)
+    {
+        label <- "single"
+        order <- 2
+    }
+    
+    dataset[,"label"] <- label
+    dataset[,"order"] <- order
+
+    return(dataset)
+} # end find_out_type()
+
+# get the data at time point tdata
+get_data <- function(path, tdata)
 {
     all_files <- list.files(
             path=path
@@ -69,18 +96,79 @@ get_data <- function(path)
     
         data <- read_delim(file=file_i, n_max=last_line_i - 1)
 
+        # determine type
+        data <- find_out_type(data)    
+
         data[,"file"] <- file_i
 
-        all_data <- bind_rows(all_data, data[nrow(data),])
+        all_data <- bind_rows(all_data, data[data$time == tdata,])
     }
 
     return(all_data)
 } # end get_data()
 
-the_data <- get_data(path=path)
+# get the data from the numeric solver
+data_numeric_solver <- get_data(path=path, tdata=20000)
 
 # calculate conditional frequencies
-the_data <- mutate(the_data,
+data_numeric_solver <- mutate(data_numeric_solver,
+        # p_{B \mid c} = I_{cB} / (S_{c} + I_{cB} + I_{cG})
+        pBc=ICG1/(SC + ICG1 + ICG2)
+        ,pBp=IPG1/(SP + IPG1 + IPG2)
+        ,pGc=ICG2/(SC + ICG1 + ICG2)
+        ,pGp=IPG2/(SP + IPG1 + IPG2)
+        )
+
+## transform into long form using pivot_longer
+#the_data_l <- pivot_longer(the_data
+#        ,cols=c(pBc,pBp,pGc,pGp)
+#        ,names_to="Conditional"
+#        ,values_to="Frequency")
+
+
+# make stooopid program to translate conditionals into their location on the graph
+# we could use tidyverse wizardry but we need to write it out to make sure
+# we do not mess this up
+group_vals <- c(0,0,1,1,2.25,2.25,3.25,3.25)
+
+data_to_plot <- as_tibble(expand.grid(infection_type=c("M13s","M13d")
+                           ,mixed_infection=c("mixed","single")
+                           ,host_type=c("S","CI")))
+
+fge_lookup <- list(M13s="B",M13d="CI")
+host_lookup <- list(S="p",CI="c")
+    
+for (row_i in 1:nrow(data_to_plot))
+{
+    row <- data_to_plot[row_i,]
+    
+    # if host type 
+    # S then we have p
+    # CI then we have c
+    
+    # parasite type
+    # M13s: pBc/pBp
+    # M13d: pGc/pGp
+    conditional_name <- paste0("p"
+                               ,fge_lookup[[row$infection_type]]
+                               ,host_lookup[[row$host_type]])
+                               
+    # filter numeric solver data 
+    data_numeric_solver_subset <- filter(data_numeric_solver
+                                         ,label==row$mixed_infection
+                                         )
+    
+    print(data_numeric_solver_subset)
+    
+    data_to_plot[row_i,]
+    # look op the frequency
+    data_to_plot[row_i,"freq"] <- 0
+}
+
+stop()
+
+
+
 
 
 # make first panel: p and g vs frequency of infection with M13
@@ -88,13 +176,7 @@ the_data <- mutate(the_data,
 bar_padding <- 0.1
 bar_width <- 0.5
 
-# simulate some data first to get the plotting correct
-group_vals <- c(0,0,1,1,2.25,2.25,3.25,3.25)
 
-the_data=data.frame(
-        group=group_vals,
-        host_type=factor(
-                rep(c("S","CI"),length.out=8)))
 
 # colour values
 colors <- c("#88ccee","#882255")
