@@ -6,14 +6,6 @@ main_path = here()
 
 path=file.path(main_path, "src/fixed_resistance/")
 
-all_files <- list.files(
-        path=path
-        ,pattern="^output_.*"
-        ,recursive = F
-        ,full.names=T)
-
-stopifnot(length(all_files)>0)
-
 # obtain the final line of the actual simulation data
 # of each file
 get_last_line_number <- function(file_name)
@@ -57,6 +49,39 @@ get_parameters <- function(file_name)
     return(vals)
 }
 
+get_data <- function(path)
+{
+    all_files <- list.files(
+            path=path
+            ,pattern="^output_.*"
+            ,recursive = F
+            ,full.names=T)
+
+    stopifnot(length(all_files) > 0)
+
+    # allocate empty variable
+    all_data <- NULL
+
+    # get last line
+    for (file_i in all_files)
+    {
+        last_line_i = get_last_line_number(file_name = file_i)
+    
+        data <- read_delim(file=file_i, n_max=last_line_i - 1)
+
+        data[,"file"] <- file_i
+
+        all_data <- bind_rows(all_data, data[nrow(data),])
+    }
+
+    return(all_data)
+} # end get_data()
+
+the_data <- get_data(path=path)
+
+# calculate conditional frequencies
+the_data <- mutate(the_data,
+
 
 # make first panel: p and g vs frequency of infection with M13
 
@@ -70,8 +95,6 @@ the_data=data.frame(
         group=group_vals,
         host_type=factor(
                 rep(c("S","CI"),length.out=8)))
-
-the_data$yval = runif(n=nrow(the_data))
 
 # colour values
 colors <- c("#88ccee","#882255")
