@@ -52,25 +52,20 @@ get_parameters <- function(file_name)
 # find out what the type is of this data
 find_out_type <- function(dataset)
 {
-    label <- "mixed"
-    order <- 4
+    single_or_mixed <- "mixed"
 
     if (dataset[1,"IPG1"] < 1 && dataset[1,"IPG2"] < 1)
     {
-        label <- "none"
-        order <- 1
+        single_or_mixed <- "none"
     } else if (dataset[1,"IPG1"] < 1 && dataset[1,"IPG2"] > 1)
     {
-        label <- "single"
-        order <- 3
+        single_or_mixed <- "M13d"
     } else if (dataset[1,"IPG1"] > 1 && dataset[1,"IPG2"] < 1)
     {
-        label <- "single"
-        order <- 2
+        single_or_mixed <- "M13s"
     }
     
-    dataset[,"label"] <- label
-    dataset[,"order"] <- order
+    dataset[,"single_or_mixed"] <- single_or_mixed
 
     return(dataset)
 } # end find_out_type()
@@ -108,7 +103,7 @@ get_data <- function(path, tdata)
 } # end get_data()
 
 # get the data from the numeric solver
-data_numeric_solver <- get_data(path=path, tdata=20000)
+data_numeric_solver <- get_data(path=path, tdata=100)
 
 # calculate conditional frequencies
 data_numeric_solver <- mutate(data_numeric_solver,
@@ -135,9 +130,14 @@ data_to_plot <- as_tibble(expand.grid(infection_type=c("M13s","M13d")
                            ,mixed_infection=c("mixed","single")
                            ,host_type=c("S","CI")))
 
-fge_lookup <- list(M13s="B",M13d="CI")
+# allocate empty column for the various frequencies
+data_to_plot$freq <- NA
+
+fge_lookup <- list(M13s="B",M13d="G")
 host_lookup <- list(S="p",CI="c")
-    
+   
+# go through all the data that we need plotting and find corresponding
+# numerical iteration data
 for (row_i in 1:nrow(data_to_plot))
 {
     row <- data_to_plot[row_i,]
@@ -152,24 +152,39 @@ for (row_i in 1:nrow(data_to_plot))
     conditional_name <- paste0("p"
                                ,fge_lookup[[row$infection_type]]
                                ,host_lookup[[row$host_type]])
-                               
-    # filter numeric solver data 
-    data_numeric_solver_subset <- filter(data_numeric_solver
-                                         ,label==row$mixed_infection
-                                         )
+    print(conditional_name)
+    stopifnot(conditional_name %in% names(data_numeric_solver))
     
-    print(data_numeric_solver_subset)
+    # if infection is mixed it is all straightforward, we just find
+    # ourselves the necessary conditional frequency
+    if (row$mixed_infection == "mixed")
+    {
+        data_numeric_solver_subset <- filter(data_numeric_solver,
+                                             single_or_mixed == "mixed")
+        
+        stopifnot(nrow(data_numeric_solver_subset) == 1)
+        
+        
+        data_to_plot[row_i,"freq"] <- data_numeric_solver_subset[,conditional_name]
+        data_to_plot[row_i,"conditional"] <- conditional_name
+    } else { # infection is not mixed, finding things will be a bit more complicated
     
-    data_to_plot[row_i,]
-    # look op the frequency
-    data_to_plot[row_i,"freq"] <- 0
+        data_numeric_solver_subset <- filter(data_numeric_solver,
+                                             single_or_mixed == row$infection_type)
+        
+        stopifnot(nrow(data_numeric_solver_subset) == 1)
+        
+        data_to_plot[row_i,"freq"] <- data_numeric_solver_subset[,conditional_name]
+        data_to_plot[row_i,"conditional"] <- conditional_name
+    }
 }
 
-stop()
+# now sort the tibble so that we can plot it
+data_to_plot <- arrange(data_to_plot, desc(mixed_infection),infection_type, host_type)
 
+data_to_plot$group <- group_vals
 
-
-
+print(data_to_plot)
 
 # make first panel: p and g vs frequency of infection with M13
 
@@ -190,16 +205,15 @@ x_label_pos_abs <- group_vals + x_label_pos_delta
 # make list with x labels
 x_labels <- rep(c("S","CI"),length.out=length(group_vals))
 
-g1 <- ggplot(data=the_data
+g1 <- ggplot(data=data_to_plot
         ,mapping=aes(x=group
-                ,y=yval,
+                ,y=freq
                 ,fill=host_type)) +
     geom_bar(stat="identity"
             ,width=bar_width
             ,position=position_dodge2(
-                    preserve="single"
-                    ,padding=padding_bar)
-            ,colour="black") +
+                    preserve="single")
+                    ,colour="black") +
     geom_vline(mapping=aes(xintercept=1+(2.25-1.0)/2.0)
             ,colour="black"
             ,linetype=2
