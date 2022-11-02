@@ -71,11 +71,11 @@ find_out_type <- function(dataset)
 } # end find_out_type()
 
 # get the data at time point tdata
-get_data <- function(path, tdata)
+get_data <- function(path, tdata, filename_regexp)
 {
     all_files <- list.files(
             path=path
-            ,pattern="^output_.*"
+            ,pattern=filename_regexp
             ,recursive = F
             ,full.names=T)
 
@@ -103,10 +103,14 @@ get_data <- function(path, tdata)
 } # end get_data()
 
 # get the data from the numeric solver
-data_numeric_solver <- get_data(path=path, tdata=100)
+data_numeric_solver <- get_data(
+        path=path, 
+        tdata=300,
+        filename_regexp="^competition_output_.*"
+        )
 
 # ignore any data where there is neither FGE
-data_numeric_solver <- filter(data_numeric_solver, order > 1)
+data_numeric_solver <- filter(data_numeric_solver, single_or_mixed != "none")
 
 # calculate conditional frequencies
 data_numeric_solver <- mutate(data_numeric_solver,

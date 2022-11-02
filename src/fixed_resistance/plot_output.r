@@ -37,11 +37,11 @@ jsonstuff <- paste0('[
     },
     {
         "xvar" : "',xvar,'",
-        "yvar" : ["ICG2","IPG2"]
+        "yvar" : ["ICG1","ICG2"]
     },
     {
         "xvar" : "',xvar,'",
-        "yvar" : ["IPG1","IPG1"]
+        "yvar" : ["IPG1","IPG2"]
     },
     {
         "xvar" : "',xvar,'",
