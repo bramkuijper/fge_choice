@@ -110,6 +110,9 @@ get_data <- function(path, tdata)
 # get the data from the numeric solver
 data_numeric_solver <- get_data(path=path, tdata=20000)
 
+# ignore any data where there is neither FGE
+data_numeric_solver <- filter(data_numeric_solver, order > 1)
+
 # calculate conditional frequencies
 data_numeric_solver <- mutate(data_numeric_solver,
         # p_{B \mid c} = I_{cB} / (S_{c} + I_{cB} + I_{cG})
@@ -152,8 +155,10 @@ for (row_i in 1:nrow(data_to_plot))
     conditional_name <- paste0("p"
                                ,fge_lookup[[row$infection_type]]
                                ,host_lookup[[row$host_type]])
-                               
-    # filter numeric solver data 
+    print(conditional_name)                               
+    
+    
+    # filter numeric solver data    
     data_numeric_solver_subset <- filter(data_numeric_solver
                                          ,label==row$mixed_infection
                                          )
