@@ -60,6 +60,8 @@ extract_from_single_file <- function(file_name, timepoints)
             ,delim=";"
             )
 
+    params <- get_parameters(file_name = file_name)
+
     # obtain final timepoint (we would also like to include
     # it to check what happens at equilibrium)
     timepoint_last <- data[nrow(data),"time"]
@@ -69,6 +71,9 @@ extract_from_single_file <- function(file_name, timepoints)
     # get data at desired time point
     data_timepoints <- filter(data, time %in% all_time_points)
     data_timepoints[,"file"] <- file_name
+
+    # append columns for the parameters
+    data_timepoints <- bind_cols(data_timepoints, params)
 
     return(data_timepoints)
 } # end extract_from_single_file

@@ -18,7 +18,7 @@ params$gamma_PG2 = 1
 params$psiG1 = 10
 params$psiG2 = 10
 
-params$FG1 = seq(0.5,10,length.out=20)
+params$FG1 = 6 #seq(0.5,10,length.out=20)
 params$FG2 = 10
 
 d_overall <- 1
@@ -46,12 +46,13 @@ params$init_popsize_PcG1G2 <- 0
 #params$init_popsize_CG2 <- 1
 
 params$pi = 1.0
-params$c = 0.02
-params$kappa = 0.001
+params$c = seq(0,1,length.out=20)
+params$kappa = seq(1.0^(-8),1.0^(-4),length.out=20)
 params$sigma = 0.0
 params$eul = 0.0001
 params$demog_feedback = c(1)
-params$d_vary <- seq(0.5,5,length.out=20)
+params$d_vary <- 1
+params$psi_vary <- 20
 
 all.params <- as.data.frame(expand.grid(params))
 
@@ -59,6 +60,9 @@ all.params$dSP <- all.params$d_vary
 all.params$dSC <- all.params$d_vary
 all.params$dIPG1 <- all.params$d_vary
 all.params$dICG1 <- all.params$d_vary
+
+all.params$psiG1 <- all.params$psi_vary
+all.params$psiG2 <- all.params$psi_vary
 
 # we need to assign the same initial population sizes to CG1 and CG2
 all.params <- add_column(all.params, 
@@ -68,7 +72,8 @@ all.params <- add_column(all.params,
 
 # remove the d_vary column
 all.params <- mutate(all.params
-        ,d_vary = NULL)
+        ,d_vary = NULL
+        ,psi_vary = NULL)
 
 
 write_delim(x=all.params,delim=";",file="all_params.csv")
