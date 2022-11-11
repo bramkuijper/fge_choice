@@ -15,10 +15,10 @@ params$gamma_CG2 = 1
 params$gamma_PG1 = 1  
 params$gamma_PG2 = 1 
 
-params$psiG1 = 2
-params$psiG2 = 2
+params$psiG1 = 10
+params$psiG2 = 10
 
-params$FG1 = 0.01
+params$FG1 = 0.5
 params$FG2 = 10
 
 d_overall <- 1.0
