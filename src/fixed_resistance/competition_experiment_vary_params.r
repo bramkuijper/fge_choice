@@ -1,7 +1,7 @@
 #!/usr/bin/env Rscript
 
 library("simulation.utils")
-library("tibble")
+library("tidyverse")
 
 # script to permutate parameter combinations
 # that will be fed to the numerical simulation of
@@ -18,10 +18,10 @@ params$gamma_PG2 = 1
 params$psiG1 = 10
 params$psiG2 = 10
 
-params$FG1 = 0.5
+params$FG1 = seq(0.5,10,length.out=20)
 params$FG2 = 10
 
-d_overall <- 1.0
+d_overall <- 1
 
 params$dSP = d_overall
 params$dSC = d_overall
@@ -51,14 +51,27 @@ params$kappa = 0.001
 params$sigma = 0.0
 params$eul = 0.0001
 params$demog_feedback = c(1)
+params$d_vary <- seq(0.5,5,length.out=20)
 
 all.params <- as.data.frame(expand.grid(params))
+
+all.params$dSP <- all.params$d_vary
+all.params$dSC <- all.params$d_vary
+all.params$dIPG1 <- all.params$d_vary
+all.params$dICG1 <- all.params$d_vary
 
 # we need to assign the same initial population sizes to CG1 and CG2
 all.params <- add_column(all.params, 
         init_popsize_CG1 = (1.0 - all.params$pi) * all.params$init_popsize_PG1, 
         init_popsize_CG2 = all.params$init_popsize_PG2, 
         .after="init_popsize_PG2")
+
+# remove the d_vary column
+all.params <- mutate(all.params
+        ,d_vary = NULL)
+
+
+write_delim(x=all.params,delim=";",file="all_params.csv")
 
 # if there is no demographic feedback and you vary infections
 # of G1 and G2, then you also need to set psi's to 0
