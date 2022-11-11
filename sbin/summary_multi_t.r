@@ -2,6 +2,7 @@
 
 library("tidyverse")
 library("here")
+library("parallel")
 
 
 # obtain the final line of the actual simulation data
@@ -47,6 +48,31 @@ get_parameters <- function(file_name)
     return(vals)
 }
 
+extract_from_single_file <- function(file_name, timepoints)
+{
+    # get the last line of this file
+    last_line_i = get_last_line_number(file_name = file_name)
+
+    data <- read_delim(
+            file=file_name
+            ,n_max=last_line_i - 1
+            ,show_col_types=F
+            ,delim=";"
+            )
+
+    # obtain final timepoint (we would also like to include
+    # it to check what happens at equilibrium)
+    timepoint_last <- data[nrow(data),"time"]
+
+    all_time_points <- c(timepoints, timepoint_last)
+
+    # get data at desired time point
+    data_timepoints <- filter(data, time %in% all_time_points)
+    data_timepoints[,"file"] <- file_name
+
+    return(data_timepoints)
+} # end extract_from_single_file
+
 # get the data at time point tdata
 get_data <- function(path, tdata, filename_regexp)
 {
@@ -58,43 +84,26 @@ get_data <- function(path, tdata, filename_regexp)
 
     stopifnot(length(all_files) > 0)
 
-    # allocate empty variable
-    all_data <- NULL
-
-    # get last line
-    for (file_idx in 1:length(all_files))
-    {
-        file_i <- all_files[[file_idx]]
-    
-        print(paste0("File ",file_idx," out of ",length(all_files)))
-
-        last_line_i = get_last_line_number(file_name = file_i)
-    
-        data <- read_delim(
-                file=file_i 
-                ,n_max=last_line_i - 1
-                ,show_col_types=F
-                )
-
-
-        # get data at desired time point
-        data_timepoints <- filter(data, time %in% tdata)
-        data_timepoints[,"file"] <- file_i
-
-        all_data <- bind_rows(all_data, data_timepoints)
-    }
+    all_data <- do.call(
+            rbind,
+            mclapply(X = all_files
+            ,FUN = extract_from_single_file
+            ,timepoints=tdata
+            ,mc.cores=20L)
+    )
 
     return(all_data)
 } # end get_data()
 
 
 path = commandArgs(trailingOnly=T)[[1]]
+pattern = commandArgs(trailingOnly=T)[[2]]
 
 # get the data from the numeric solver
 data_numeric_solver <- get_data(
         path=path,
         tdata=c(0,1,5,10,50,100,1000),
-        filename_regexp="^varyfc*"
+        filename_regexp=pattern
         )
 
 # make delta data
@@ -107,3 +116,6 @@ data_numeric_solver <- mutate(
         ,fc=(ICG1 + ICG2 + SC)/N 
         )
 
+write_delim(x=data_numeric_solver
+        ,delim=";"
+       ,file="summary.csv")
