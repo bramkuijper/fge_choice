@@ -105,7 +105,7 @@ get_data <- function(path, tdata, filename_regexp)
 # get the data from the numeric solver
 data_numeric_solver <- get_data(
         path=path, 
-        tdata=300,
+        tdata=75,
         filename_regexp="^competition_output_.*"
         )
 

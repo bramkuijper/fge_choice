@@ -190,7 +190,8 @@ Solver::Solver(Parameters &parms) :
             break;
         }
 
-        if (time_step % parms.print_interval == 0)
+        // output every n generations, except at the beginning
+        if (time_step % parms.print_interval == 0 || time_step < 5000)
         {
             write_data();
         }
