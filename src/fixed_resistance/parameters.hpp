@@ -37,7 +37,7 @@ class Parameters
 
         long unsigned max_ecol_time = 5e07;
 
-        long unsigned print_interval = 10;
+        long unsigned print_interval = 1000;
 
         double vanish_threshold = 1e-07;
 

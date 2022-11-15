@@ -47,7 +47,7 @@ params$init_popsize_PcG1G2 <- 0
 
 params$pi = 1.0
 params$c = seq(0,1,length.out=20)
-params$kappa = seq(1.0^(-8),1.0^(-4),length.out=20)
+params$kappa = seq(10^(-8),10^(-4),length.out=20)
 params$sigma = 0.0
 params$eul = 0.0001
 params$demog_feedback = c(1)
@@ -63,6 +63,10 @@ all.params$dICG1 <- all.params$d_vary
 
 all.params$psiG1 <- all.params$psi_vary
 all.params$psiG2 <- all.params$psi_vary
+
+# we need to adjust eul to kappa as well, as large
+# populations otherwise run the risk of going inf
+all.params$eul <- all.params$kappa * 0.1
 
 # we need to assign the same initial population sizes to CG1 and CG2
 all.params <- add_column(all.params, 

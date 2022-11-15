@@ -47,9 +47,9 @@ params$init_popsize_PcG1G2 <- 0
 
 params$pi = 1.0
 params$c = 0.02
-params$kappa = 0.001
+params$kappa = 0.00001
 params$sigma = 0.0
-params$eul = 0.0001
+params$eul = 0.00001
 params$demog_feedback = c(1)
 
 all.params <- as.data.frame(expand.grid(params))
