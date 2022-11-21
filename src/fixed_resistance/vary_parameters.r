@@ -21,15 +21,16 @@ params$psiG2 = 10
 params$FG1 = 6
 params$FG2 = 10
 
-d_overall <- 5
+d_susceptible <- 5
+d_double <- 1
 
-params$dSP = d_overall
-params$dSC = d_overall
+params$dSP = d_susceptible
+params$dSC = d_susceptible
 
-params$dIPG1 = d_overall
-params$dIPG2 = 1
-params$dICG1 = d_overall
-params$dICG2 = 1
+params$dIPG1 = d_susceptible
+params$dIPG2 = d_double
+params$dICG1 = d_susceptible
+params$dICG2 = d_double
 
 params$init_popsize_P <- 30
 params$init_popsize_C <- 30
@@ -47,16 +48,16 @@ params$init_popsize_PcG1G2 <- 0
 
 params$pi = 1.0
 params$c = 0.02
-params$kappa = 0.00001
+params$kappa = 0.0001
 params$sigma = 0.0
-params$eul = 0.00001
+params$eul = 0.0001
 params$demog_feedback = c(1)
 
 all.params <- as.data.frame(expand.grid(params))
 
 # we need to assign the same initial population sizes to CG1 and CG2
 all.params <- add_column(all.params, 
-        init_popsize_CG1 = all.params$init_popsize_PG1, 
+        init_popsize_CG1 = 0, 
         init_popsize_CG2 = all.params$init_popsize_PG2, 
         .after="init_popsize_PG2")
 
