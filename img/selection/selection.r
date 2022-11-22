@@ -111,7 +111,7 @@ get_data <- function(path, tdata, filename_regexp)
 
 ##### PLOT WITH ANTIBIOTICS #####
 
-path=file.path(main_path, "img/selection/base_output/")
+path=file.path(main_path, "/img/selection/base_output_low_advantage_M13s/")
 
 
 # get the data from the numeric solver

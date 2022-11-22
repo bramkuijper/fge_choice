@@ -37786,11 +37786,11 @@ dICG1;1
 gammaCG2;1
 dICG2;1
 psiG1;10
-FG1;10
+FG1;1
 psiG2;10
-FG2;10
+FG2;1
 pi;1
-FGB;20
+FGB;2
 c;0.02
 kappa;0.0001
 sigma;0

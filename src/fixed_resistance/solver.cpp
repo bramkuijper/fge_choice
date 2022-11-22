@@ -47,6 +47,12 @@ Solver::Solver(Parameters &parms) :
     for (time_step = 0; 
             time_step <= parms.max_ecol_time; ++time_step)
     {
+        // output every n generations, except at the beginning
+        if (time_step % parms.print_interval == 0 || time_step < 10000)
+        {
+            write_data();
+        }
+
         // vary host types
         for (int host_type_idx = 0; 
                 host_type_idx < 2; ++host_type_idx)
@@ -188,12 +194,6 @@ Solver::Solver(Parameters &parms) :
         {
             write_data();
             break;
-        }
-
-        // output every n generations, except at the beginning
-        if (time_step % parms.print_interval == 0 || time_step < 10000)
-        {
-            write_data();
         }
 
     } // end for time_step

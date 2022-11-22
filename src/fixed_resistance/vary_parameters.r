@@ -18,8 +18,8 @@ params$gamma_PG2 = 1
 params$psiG1 = 10
 params$psiG2 = 10
 
-params$FG1 = 6
-params$FG2 = 10
+params$FG1 = 2
+params$FG2 = 20
 
 d_susceptible <- 5
 d_double <- 1
