@@ -19,7 +19,7 @@ params$psiG1 = 10
 params$psiG2 = 10
 
 params$FG1 = 2
-params$FG2 = 20
+params$FG2 = 10
 
 d_susceptible <- 5
 d_double <- 1
@@ -32,7 +32,7 @@ params$dIPG2 = d_double
 params$dICG1 = d_susceptible
 params$dICG2 = d_double
 
-params$init_popsize_P <- 30
+params$init_popsize_P <- 15
 params$init_popsize_C <- 30
 
 params$init_popsize_PG1 <- c(0,1)
