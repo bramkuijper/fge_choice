@@ -240,7 +240,7 @@ void Solver::write_data()
     }
 
     data_file << N << ";" << std::endl;
-}
+} // end void Solver::write_data()
 
 void Solver::write_data_headers()
 {
@@ -265,7 +265,7 @@ void Solver::write_data_headers()
     }
 
     data_file << "N;" << std::endl;
-} // end write_data_headers()
+}  // end write_data_headers()
 
 void Solver::write_parameters()
 {
@@ -278,19 +278,31 @@ void Solver::write_parameters()
             host_type_idx < 2; ++host_type_idx)
     {
 
+
         host_id = host_type_idx == C ? "C" : "P";
+
+        // print out the initial population size
+        data_file << "init_S" << host_id << ";"
+            << params.init_popsize[host_type_idx] << std::endl;
 
         data_file << "dS" << host_id << ";" 
             << params.dS[host_type_idx] << std::endl;
 
+        data_file << "init_I" << host_id << "G1G2" << ";"
+            << params.init_popsize_superinfected[host_type_idx] << std::endl;
 
         for (int phage_type_idx = 0; 
                 phage_type_idx < 2; ++phage_type_idx)
         {
             phage_id = phage_type_idx == G1 ? "G1" : "G2";
 
-            data_file << "gamma" << host_id << phage_id << ";" 
+            // initial value of the infecteds
+            data_file << "init_I" << host_id << phage_id << ";"
+                << params.init_popsize_infected[host_type_idx][phage_type_idx] << std::endl
+                 
+                << "gamma" << host_id << phage_id << ";" 
                 << params.gamma[host_type_idx][phage_type_idx] << std::endl
+
                     << "dI" << host_id << phage_id << ";" 
                 << params.dI[host_type_idx][phage_type_idx] << std::endl;
         }
@@ -314,7 +326,7 @@ void Solver::write_parameters()
         << "eul;" << params.eul << std::endl
         << "demog_feedback;" << params.demog_feedback << std::endl
         << "vanish_threshold;" << params.vanish_threshold << std::endl;
-} // write_parameters()
+} // end write_parameters()
 
 
 void Solver::update_N()
