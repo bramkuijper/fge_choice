@@ -18,10 +18,10 @@ params$gamma_PG2 = 1
 params$psiG1 = 10
 params$psiG2 = 10
 
-params$FG1 = 6 #seq(0.5,10,length.out=20)
+params$FG1 = 2 #seq(0.5,10,length.out=20)
 params$FG2 = 10
 
-d_overall <- 1
+d_overall <- 5
 
 params$dSP = d_overall
 params$dSC = d_overall
@@ -46,23 +46,13 @@ params$init_popsize_PcG1G2 <- 0
 #params$init_popsize_CG2 <- 1
 
 params$pi = 1.0
-params$c = seq(0,1,length.out=20)
-params$kappa = seq(10^(-8),10^(-4),length.out=20)
+params$c = 0.02
+params$kappa = 0.0001
 params$sigma = 0.0
 params$eul = 0.0001
 params$demog_feedback = c(1)
-params$d_vary <- 1
-params$psi_vary <- 20
 
 all.params <- as.data.frame(expand.grid(params))
-
-all.params$dSP <- all.params$d_vary
-all.params$dSC <- all.params$d_vary
-all.params$dIPG1 <- all.params$d_vary
-all.params$dICG1 <- all.params$d_vary
-
-all.params$psiG1 <- all.params$psi_vary
-all.params$psiG2 <- all.params$psi_vary
 
 # we need to adjust eul to kappa as well, as large
 # populations otherwise run the risk of going inf

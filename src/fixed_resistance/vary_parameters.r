@@ -32,7 +32,7 @@ params$dIPG2 = d_double
 params$dICG1 = d_susceptible
 params$dICG2 = d_double
 
-params$init_popsize_P <- 15
+params$init_popsize_P <- 30
 params$init_popsize_C <- 30
 
 params$init_popsize_PG1 <- c(0,1)
@@ -54,6 +54,8 @@ params$eul = 0.0001
 params$demog_feedback = c(1)
 
 all.params <- as.data.frame(expand.grid(params))
+
+all.params$init_popsize_P <- 60 - all.params$init_popsize_C
 
 # we need to assign the same initial population sizes to CG1 and CG2
 all.params <- add_column(all.params, 

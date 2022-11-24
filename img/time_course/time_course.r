@@ -77,20 +77,22 @@ find_out_type <- function(dataset)
     return(dataset)
 } # end find_out_type()
 
-file_names <- c("output2","output3","output4")
+file_names <- c("output_2","output_3","output_4")
 
 label <- c("M13s_only","M13d_only","Mixed")
 
 
 for (file_idx in 1:length(file_names))
 {
-    file_time_course_antibiotics = paste0(
+    file_time_course = file.path(
             "../selection/base_output_low_advantage_M13s/", file_names[[file_idx]]
     )
+    
+    print(file_time_course)
 
     last_line_i = get_last_line_number(file_name = file_time_course)
         
-    time_series_data <- read_delim(file = path
+    time_series_data <- read_delim(file = file_time_course
                                    ,delim =";"
                                    ,n_max = last_line_i - 1)
 

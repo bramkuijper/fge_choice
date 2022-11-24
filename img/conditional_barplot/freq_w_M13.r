@@ -2,9 +2,7 @@ library("tidyverse")
 library("here")
 library("cowplot")
 
-main_path = here()
 
-path=file.path(main_path, "src/fixed_resistance/")
 
 # obtain the final line of the actual simulation data
 # of each file
@@ -57,10 +55,10 @@ find_out_type <- function(dataset)
     if (dataset[1,"IPG1"] < 1 && dataset[1,"IPG2"] < 1)
     {
         single_or_mixed <- "none"
-    } else if (dataset[1,"IPG1"] < 1 && dataset[1,"IPG2"] > 1)
+    } else if (dataset[1,"IPG1"] < 1 && dataset[1,"IPG2"] >= 1)
     {
         single_or_mixed <- "M13d"
-    } else if (dataset[1,"IPG1"] > 1 && dataset[1,"IPG2"] < 1)
+    } else if (dataset[1,"IPG1"] >= 1 && dataset[1,"IPG2"] < 1)
     {
         single_or_mixed <- "M13s"
     }
@@ -69,6 +67,8 @@ find_out_type <- function(dataset)
 
     return(dataset)
 } # end find_out_type()
+
+path="."
 
 # get the data at time point tdata
 get_data <- function(path, tdata, filename_regexp)
@@ -96,7 +96,7 @@ get_data <- function(path, tdata, filename_regexp)
 
         data[,"file"] <- file_i
 
-        all_data <- bind_rows(all_data, data[data$time == tdata,])
+        all_data <- bind_rows(all_data, data[data$time %in% tdata,])
     }
 
     return(all_data)
@@ -105,7 +105,7 @@ get_data <- function(path, tdata, filename_regexp)
 # get the data from the numeric solver
 data_numeric_solver <- get_data(
         path=path, 
-        tdata=75,
+        tdata=c(1000),
         filename_regexp="^competition_output_.*"
         )
 
@@ -191,7 +191,6 @@ data_to_plot <- arrange(data_to_plot, desc(mixed_infection),infection_type, host
 
 data_to_plot$group <- group_vals
 
-print(data_to_plot)
 
 # make first panel: p and g vs frequency of infection with M13
 
