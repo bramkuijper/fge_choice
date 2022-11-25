@@ -139,6 +139,9 @@ data_numeric_solver_delta =
         ,delta_c = cTotal - cTotal[row_number() == 1]
     )
 
+print(data_numeric_solver_delta)
+stop()
+
 ggplot(data=data_numeric_solver_delta %>% filter(time==500)
         ,mapping=aes(x=fct_reorder(single_or_mixed,order)
                      ,y=delta_c)) + 
@@ -229,6 +232,7 @@ ggplot(data=data_numeric_solver_delta %>% filter(time==500)
     geom_bar(stat="identity") +
     theme_classic(base_size = 18) +
     xlab("") +
-    ylab("Selection rate") 
+    ylab("Selection rate")  +
+    ylim()
 
 ggsave(file="selection_no_antibiotics.pdf")
