@@ -60,11 +60,11 @@ find_out_type <- function(dataset)
     {
         single_or_mixed <- "none"
         order <- 1
-    } else if (dataset[1,"IPG1"] < 1 && dataset[1,"IPG2"] > 1)
+    } else if (dataset[1,"IPG1"] < 1 && dataset[1,"IPG2"] >= 1)
     {
         single_or_mixed <- "M13d"
         order <- 3
-    } else if (dataset[1,"IPG1"] > 1 && dataset[1,"IPG2"] < 1)
+    } else if (dataset[1,"IPG1"] >= 1 && dataset[1,"IPG2"] < 1)
     {
         single_or_mixed <- "M13s"
         order <- 2
@@ -113,7 +113,6 @@ get_data <- function(path, tdata, filename_regexp)
 
 path=file.path(main_path, "/img/selection/base_output_low_advantage_M13s/")
 
-
 # get the data from the numeric solver
 data_numeric_solver <- get_data(
         path=path, 
@@ -128,14 +127,14 @@ data_numeric_solver <- mutate(data_numeric_solver,
 #        ,pBp=IPG1/(SP + IPG1 + IPG2)
 #        ,pGc=ICG2/(SC + ICG1 + ICG2)
 #        ,pGp=IPG2/(SP + IPG1 + IPG2)
-        pTotal=(IPG1 + IPG2 + SP) / N
-        ,cTotal=(ICG1 + ICG2 + SC) / N
+        pTotal=(IPG1 + IPG2 + SP) / (IPG1 + IPG2 + SP + ICG1 + ICG2 + SC)
+        ,cTotal=(ICG1 + ICG2 + SC) / (IPG1 + IPG2 + SP + ICG1 + ICG2 + SC)
         )
 
 # calculate deltas
 data_numeric_solver_delta = 
     data_numeric_solver %>% group_by(file) %>% arrange(time) %>% mutate(
-        delta_p = pTotal - pTotal[row_number() == 1]
+        ,delta_p = pTotal - pTotal[row_number() == 1]
         ,delta_c = cTotal - cTotal[row_number() == 1]
     )
 
@@ -187,7 +186,8 @@ ggplot(data=data_numeric_solver_delta %>% filter(time==500)
     geom_bar(stat="identity") +
     theme_classic(base_size = 18) +
     xlab("") +
-    ylab("Selection rate")
+    ylab("Selection rate") +
+    ylim(-0.01,0.015)
 
 ggsave(file="selection_with_antibiotics_low_cost.pdf")
 
@@ -229,6 +229,7 @@ ggplot(data=data_numeric_solver_delta %>% filter(time==500)
     geom_bar(stat="identity") +
     theme_classic(base_size = 18) +
     xlab("") +
-    ylab("Selection rate") 
+    ylab("Selection rate") +
+    ylim(-0.01,0.015)
 
 ggsave(file="selection_no_antibiotics.pdf")

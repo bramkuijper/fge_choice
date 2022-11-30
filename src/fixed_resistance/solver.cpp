@@ -43,6 +43,8 @@ Solver::Solver(Parameters &parms) :
 
     bool converged;
 
+    update_N();
+
     // numerically solve over time 
     for (time_step = 0; 
             time_step <= parms.max_ecol_time; ++time_step)
