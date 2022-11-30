@@ -35,8 +35,8 @@ params$dICG2 = d_double
 params$init_popsize_P <- 30
 params$init_popsize_C <- 30
 
-params$init_popsize_PG1 <- c(0,1)
-params$init_popsize_PG2 <- c(0,1)
+params$init_popsize_PG1         <- c(0,1)
+params$init_popsize_PG2         <- c(0,1)
 params$init_popsize_PpG1G2 <- 0
 params$init_popsize_PcG1G2 <- 0
 

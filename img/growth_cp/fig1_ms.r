@@ -1,5 +1,5 @@
 library("tidyverse")
-path <- "/Users/ALWK201/Projects/fge_choice/src/fixed_resistance"
+path <- "."
 
 all_files <- list.files(
         path=path
@@ -54,6 +54,9 @@ get_parameters <- function(file_name)
 if (!exists("all_data"))
 {
     all_data <- NULL
+    
+    stopifnot(length(all_files) > 0)
+    
     # go through all files and get parameters
     # and collect them in one data frame
     for (file in all_files)
@@ -108,6 +111,7 @@ tmax <- 20000
 all_data <- all_data %>% filter(TIME < tmax) %>% mutate(
     choosy=ICG1 + ICG2 
     ,promiscuous=IPG1+IPG2
+    ,time_thousands = TIME/1000
 )
 
 all_data_t <- all_data %>% pivot_longer(
@@ -119,7 +123,7 @@ all_data_t <- all_data %>% pivot_longer(
 # some labelling vector
 # really not sure why it has to be a named
 # character vector, simply order of the panels
-# should be enough here, but idiot Hadley says no
+# should be enough here, but Hadley says no
 the_labels <- c(
     a="No MGE"
     ,b="Only MGE B"
@@ -128,13 +132,17 @@ the_labels <- c(
 )
 
 ggplot(data=all_data_t
-       ,mapping=aes(x=TIME
+       ,mapping=aes(x=time_thousands
                     ,y=Frequency)) +
     geom_line(mapping=aes(colour=Type)) +
     scale_fill_brewer(palette = "Set2") +
     theme_classic() +
-    facet_grid(~order, labeller = labeller(order=the_labels))
+    facet_grid(~order, labeller = labeller(order=the_labels)) +
+    scale_colour_manual(values=c("#92d4f2","#992f67"), labels=c("Immune","Sensitive")) +
+    xlab("Time step (x1000)") +
+    ylab("Density")
 
-ggsave(file="choosy_promiscuous_vs_time.pdf")
+ggsave(file="choosy_promiscuous_vs_time.pdf"
+       ,height=3)
 
 
