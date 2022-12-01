@@ -98,8 +98,8 @@ single_multipanel <- function(
         file_time_course = file.path(
                 path, file_names[[file_idx]]
         )
-        print(file_time_course)
-        last_line_i = get_last_line_number(file_name = file_time_course)
+        
+       last_line_i = get_last_line_number(file_name = file_time_course)
             
         time_series_data <- read_delim(file = file_time_course
                                        ,delim =";"
@@ -130,6 +130,8 @@ single_multipanel <- function(
     
     } # end for
     
+    parameters <- get_parameters(file_name = file_antibiotic)
+    
     # we need to get a single column for all the frequency data
     all_time_series_data_l = all_time_series_data %>% pivot_longer(
         cols = c("ImmuneM13s","ImmuneM13d","SensitiveM13s","SensitiveM13d")
@@ -156,9 +158,11 @@ single_multipanel <- function(
         scale_colour_brewer(palette = "Set1") +
         xlab("Time") +
         ylab("Frequency") +
-        ylim(0,1)
+        ylim(0,1) + plot_annotation(
+        title=paste0("FG1: "
+            ,parameters["FG1"]))
     
-    ggsave(file=file_out)
+    ggsave(file=file_out) 
 } # end single_multipanel
 
 
@@ -178,9 +182,11 @@ for (row_i in 1:nrow(summary_data_antibiotic))
 {
     file_antibiotics <- summary_data_antibiotic[row_i,] %>% pull(file)
     
+    stopifnot(nrow(file_antibiotics) == 1)
+    
     single_multipanel(
             file_antibiotic=file_antibiotics
             ,file_no_antibiotic=summary_data_no_antibiotic %>% pull(file)
             ,file_out=paste0(basename(file_antibiotics),".pdf")
-            ,tmax=200)
+            ,tmax=1000)
 }

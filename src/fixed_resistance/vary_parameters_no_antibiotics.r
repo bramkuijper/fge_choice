@@ -49,21 +49,26 @@ d_double <- 1
 antibiotics_params <- list(
         FG1=FG1_antibiotic
         ,FG2=10
+        ,psiG1=c(1)
+        ,psiG2=1
         ,dSP=d_susc # death rates susceptibe
         ,dSC=d_susc
         ,dIPG1=d_single # death rates infecteds
         ,dIPG2=d_double
         ,dICG1=d_single
         ,dICG2=d_double)
-
+#
 antibiotics_params <- modifyList(default_params, antibiotics_params)
 
 d_susc <- 1
-d_single <- 2
-d_double <- 2
+d_single <- 5
+d_double <- 5
+
 no_antibiotics_params <- list(
         FG1=1
         ,FG2=1
+        ,psiG1=c(10)
+        ,psiG2=10
         ,dSP=d_susc # death rates susceptibe
         ,dSC=d_susc
         ,dIPG1=d_single # death rates infecteds
@@ -81,13 +86,17 @@ no_antibiotics_params <- modifyList(default_params, no_antibiotics_params)
 #params$init_popsize_CG2 <- 1
 
 all.params <- rbind(
-        as.data.frame(expand.grid(antibiotics_params))
-        ,as.data.frame(expand.grid(no_antibiotics_params))
+        #as.data.frame(expand.grid(antibiotics_params)),
+        as.data.frame(expand.grid(no_antibiotics_params))
         )
+
+all.params$psiG2 <- all.params$psiG1
+
+
 
 # we need to assign the same initial population sizes to CG1 and CG2
 all.params <- add_column(all.params, 
-        init_popsize_CG1 = 0, 
+        init_popsize_CG1 = (1.0 - all.params$pi) * all.params$init_popsize_PG1, 
         init_popsize_CG2 = all.params$init_popsize_PG2, 
         .after="init_popsize_PG2")
 
