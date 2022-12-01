@@ -112,13 +112,64 @@ get_data <- function(path, tdata, filename_regexp)
     return(all_data)
 } # end get_data()
 
-# NO ANTIBIOTICS
+path = "../time_course_facets/"
 
-path=file.path(main_path, "/img/selection/base_output/")
+# first get the summary file
+summary_data <- read_delim(
+        file=file.path(path,"summary.csv")
+        ,delim=";")
 
-# get the data from the numeric solver
-data_numeric_solver <- get_data(
-        path=path, 
-        tdata=c(0,50,100, 500, 1000, 5000, 9000),
-        filename_regexp="^output_.*"
-)
+# find an antibiotic file that matches the proper value of psi and FG1
+file_name_antibiotic = summary_data %>% filter(psiG1 == 1 & FG1 == 2 & FG2 == 10) %>% pull(file)
+
+
+file_name_no_antibiotic = summary_data %>% filter(psiG1 == 1 & FG2 == 1) %>% pull(file)
+
+t_measure <- 750
+
+data_numeric_solver_no_antibiotic <- read_delim(
+        file=file.path(path,file_name_no_antibiotic)
+        ,delim=";"
+        ,n_max = t_measure + 1) %>% filter(time == t_measure)
+
+
+data_numeric_solver <- read_delim(
+        file=file.path(path,file_name_antibiotic)
+        ,delim=";"
+        ,n_max = t_measure + 1) %>% filter(time == t_measure)
+
+# we need to plot ratios of mixed infections 
+path=file.path(main_path, "/img/time_course_facets/")
+
+
+
+# infection ratio immune vs sensitive M13s
+M13s_ratio_no_anti <- data_numeric_solver_no_antibiotic$ICG1 / data_numeric_solver_no_antibiotic$IPG1
+M13d_ratio_no_anti <- data_numeric_solver_no_antibiotic$ICG2 / data_numeric_solver_no_antibiotic$IPG2
+M13s_ratio <- data_numeric_solver$ICG1 / data_numeric_solver$IPG1
+M13d_ratio <- data_numeric_solver$ICG2 / data_numeric_solver$IPG2
+
+# now build a box plot of the ratios
+the.ratios <- data.frame(
+        x=c(1,2,3,4)
+        ,y=c(M13s_ratio_no_anti
+                ,M13d_ratio_no_anti
+                ,M13s_ratio
+                ,M13d_ratio)
+        ,labels=c("M13s","M13d","M13s","M13d")
+    )
+
+
+ggplot(data=the.ratios
+        ,mapping=aes(x=factor(x)
+                ,y=y)) +
+    geom_point(size=5,colour="#337167") +
+    theme_classic(base_size=18) +
+    xlab("") +
+    ylab("Ratio of infection\nimmune/sensitive") +
+    geom_hline(yintercept=1.0,linetype="dashed") +
+    scale_x_discrete(breaks=waiver(), labels=the.ratios$labels)  +
+    scale_y_continuous(breaks=c(0.0,0.25,0.5,0.75,1.0,1.25)) 
+
+ggsave("ratio_plot.pdf")
+
