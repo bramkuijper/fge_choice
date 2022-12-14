@@ -61,8 +61,8 @@ antibiotics_params <- list(
 antibiotics_params <- modifyList(default_params, antibiotics_params)
 
 d_susc <- 1 # far lower death rate due to lack of antibiotics
-d_single <- 1.5 # death rate of single and double plasmids because carrying plasmid
-d_double <- 2
+d_single <- 2 # death rate of single and double plasmids because carrying plasmid
+d_double <- 4
 
 no_antibiotics_params <- list(
         FG1=1

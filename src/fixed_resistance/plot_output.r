@@ -49,6 +49,11 @@ jsonstuff <- paste0('[
     },
     {
         "xvar" : "',xvar,'",
+        "yvar" : ["pG1","pG2"],
+        "ylim" : [-0.05,1.05]
+    },
+    {
+        "xvar" : "',xvar,'",
         "yvar" : ["pSP","pSC"],
         "ylim" : [-0.05,1.05]
     },
@@ -134,6 +139,8 @@ data.tibble.orig <- mutate(data.tibble.orig,
         ,p_GcMinusGp=(pG2C - pG2P)
         ,p_ScMinusSp=(pSC - pSP)
         ,p_BcMinusBp=(pG1C - pG1P)
+        ,pG1=(IPG1 + ICG1) / (IPG1 + ICG1 + IPG2 + ICG2)
+        ,pG2=(IPG2 + ICG2) / (IPG1 + ICG1 + IPG2 + ICG2)
         )
 
 # if this data set is massive, reduce by plotting

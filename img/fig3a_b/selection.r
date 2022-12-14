@@ -153,49 +153,10 @@ ggplot(data=data_numeric_solver_delta %>% filter(time==t_delta)
     geom_bar(stat="identity") +
     theme_classic(base_size = 18) +
     xlab("") +
-    ylab("Selection rate")
-
-ggsave(file="selection_with_antibiotics.pdf")
-
-#################### ANTIBIOTICS LOW COST OF CHOICE ####################
-
-rm(data_numeric_solver)
-
-path=file.path(main_path, "img/selection/low_c_output/")
-
-
-# get the data from the numeric solver
-data_numeric_solver <- get_data(
-        path=path, 
-        tdata=c(0,50,100, t_delta, 1000, 5000, 9000),
-        filename_regexp="^output_.*"
-)
-
-#
-data_numeric_solver <- mutate(data_numeric_solver,
-        pTotal=(IPG1 + IPG2 + SP) / N
-        ,cTotal=(ICG1 + ICG2 + SC) / N
-        )
-
-# calculate deltas, i.e., 
-#difference in frequency between time t=x and t=0
-data_numeric_solver_delta = 
-    data_numeric_solver %>% group_by(file) %>% arrange(time) %>% mutate(
-        delta_p = pTotal - pTotal[row_number() == 1]
-        ,delta_c = cTotal - cTotal[row_number() == 1]
-    )
-
-ggplot(data=data_numeric_solver_delta %>% filter(time==t_delta)
-        ,mapping=aes(x=fct_reorder(single_or_mixed,order)
-                     ,y=delta_c)) + 
-    geom_bar(stat="identity") +
-    theme_classic(base_size = 18) +
-    xlab("") +
     ylab("Selection rate") +
     ylim(-0.01,0.015)
 
-ggsave(file="selection_with_antibiotics_low_cost.pdf")
-
+ggsave(file="selection_with_antibiotics.pdf")
 
 
 #################### NO ANTIBIOTICS ####################
