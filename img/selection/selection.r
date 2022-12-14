@@ -120,13 +120,9 @@ data_numeric_solver <- get_data(
         filename_regexp="^output_.*"
 )
 
-# calculate conditional frequencies
+# calculate frequencies of susceptible (I use p or P to indicate susceptible, as p stands for promiscouous)
 data_numeric_solver <- mutate(data_numeric_solver,
-        # p_{B \mid c} = I_{cB} / (S_{c} + I_{cB} + I_{cG})
-#        pBc=ICG1/(SC + ICG1 + ICG2)
-#        ,pBp=IPG1/(SP + IPG1 + IPG2)
-#        ,pGc=ICG2/(SC + ICG1 + ICG2)
-#        ,pGp=IPG2/(SP + IPG1 + IPG2)
+# calculate frequencies of susceptible (I use p or P to indicate susceptible, as p stands for promiscouous)
         pTotal=(IPG1 + IPG2 + SP) / (IPG1 + IPG2 + SP + ICG1 + ICG2 + SC)
         ,cTotal=(ICG1 + ICG2 + SC) / (IPG1 + IPG2 + SP + ICG1 + ICG2 + SC)
         )
@@ -165,13 +161,8 @@ data_numeric_solver <- get_data(
         filename_regexp="^output_.*"
 )
 
-# calculate conditional frequencies
+#
 data_numeric_solver <- mutate(data_numeric_solver,
-        # p_{B \mid c} = I_{cB} / (S_{c} + I_{cB} + I_{cG})
-#        pBc=ICG1/(SC + ICG1 + ICG2)
-#        ,pBp=IPG1/(SP + IPG1 + IPG2)
-#        ,pGc=ICG2/(SC + ICG1 + ICG2)
-#        ,pGp=IPG2/(SP + IPG1 + IPG2)
         pTotal=(IPG1 + IPG2 + SP) / N
         ,cTotal=(ICG1 + ICG2 + SC) / N
         )
@@ -210,11 +201,6 @@ data_numeric_solver <- get_data(
 
 # calculate conditional frequencies
 data_numeric_solver <- mutate(data_numeric_solver,
-        # p_{B \mid c} = I_{cB} / (S_{c} + I_{cB} + I_{cG})
-#        pBc=ICG1/(SC + ICG1 + ICG2)
-#        ,pBp=IPG1/(SP + IPG1 + IPG2)
-#        ,pGc=ICG2/(SC + ICG1 + ICG2)
-#        ,pGp=IPG2/(SP + IPG1 + IPG2)
         pTotal=(IPG1 + IPG2 + SP) / N
         ,cTotal=(ICG1 + ICG2 + SC) / N
         )

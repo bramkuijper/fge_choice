@@ -123,9 +123,9 @@ summary_data <- read_delim(
 file_name_antibiotic = summary_data %>% filter(psiG1 == 1 & FG1 == 2 & FG2 == 10) %>% pull(file)
 
 
-file_name_no_antibiotic = summary_data %>% filter(psiG1 == 1 & FG2 == 1) %>% pull(file)
+file_name_no_antibiotic = summary_data %>% filter(psiG1 == 1 & FG1 == 1 & FG2 == 1) %>% pull(file)
 
-t_measure <- 750
+t_measure <- 600 
 
 data_numeric_solver_no_antibiotic <- read_delim(
         file=file.path(path,file_name_no_antibiotic)
