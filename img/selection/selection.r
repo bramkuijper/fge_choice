@@ -3,9 +3,6 @@ library("here")
 library("cowplot")
 library("forcats")
 
-main_path = here()
-
-
 # obtain the final line of the actual simulation data
 # of each file
 get_last_line_number <- function(file_name)
@@ -47,7 +44,7 @@ get_parameters <- function(file_name)
     names(vals) <- f[,1]
     
     return(vals)
-}
+} # end get_parameters()
 
 # find out what the type is of this data
 find_out_type <- function(dataset)
@@ -56,6 +53,8 @@ find_out_type <- function(dataset)
     
     order <- 4
 
+    # if I started with fewer than one individual in each 
+    # category it means there are no infections
     if (dataset[1,"IPG1"] < 1 && dataset[1,"IPG2"] < 1)
     {
         single_or_mixed <- "none"
@@ -74,7 +73,7 @@ find_out_type <- function(dataset)
     dataset[,"order"] <- order
 
     return(dataset)
-} # end find_out_type()
+}  # end find_out_type()
 
 # get the data at time point tdata
 get_data <- function(path, tdata, filename_regexp)
@@ -109,14 +108,25 @@ get_data <- function(path, tdata, filename_regexp)
 } # end get_data()
 
 
+##### PARAMETERS ETC #####
+
+main_path <- here()
+
+
+# time steps after start of simulation 
+# over which we calculate change in frequencis
+t_delta <- 500
+
+
+
 ##### PLOT WITH ANTIBIOTICS #####
 
 path=file.path(main_path, "/img/selection/base_output_low_advantage_M13s/")
 
-# get the data from the numeric solver
+# get the data from the numeric solver for different time steps
 data_numeric_solver <- get_data(
         path=path, 
-        tdata=c(0,50,100, 500, 1000, 5000, 9000),
+        tdata=c(0,50,100, t_delta, 1000, 5000, 9000),
         filename_regexp="^output_.*"
 )
 
@@ -127,7 +137,8 @@ data_numeric_solver <- mutate(data_numeric_solver,
         ,cTotal=(ICG1 + ICG2 + SC) / (IPG1 + IPG2 + SP + ICG1 + ICG2 + SC)
         )
 
-# calculate deltas
+# calculate deltas, i.e., 
+#difference in frequency between time t=x and t=0
 data_numeric_solver_delta = 
     data_numeric_solver %>% group_by(file) %>% arrange(time) %>% mutate(
         ,delta_p = pTotal - pTotal[row_number() == 1]
@@ -135,9 +146,8 @@ data_numeric_solver_delta =
     )
 
 print(data_numeric_solver_delta)
-stop()
 
-ggplot(data=data_numeric_solver_delta %>% filter(time==500)
+ggplot(data=data_numeric_solver_delta %>% filter(time==t_delta)
         ,mapping=aes(x=fct_reorder(single_or_mixed,order)
                      ,y=delta_c)) + 
     geom_bar(stat="identity") +
@@ -157,7 +167,7 @@ path=file.path(main_path, "img/selection/low_c_output/")
 # get the data from the numeric solver
 data_numeric_solver <- get_data(
         path=path, 
-        tdata=c(0,50,100, 500, 1000, 5000, 9000),
+        tdata=c(0,50,100, t_delta, 1000, 5000, 9000),
         filename_regexp="^output_.*"
 )
 
@@ -167,14 +177,15 @@ data_numeric_solver <- mutate(data_numeric_solver,
         ,cTotal=(ICG1 + ICG2 + SC) / N
         )
 
-# calculate deltas
+# calculate deltas, i.e., 
+#difference in frequency between time t=x and t=0
 data_numeric_solver_delta = 
     data_numeric_solver %>% group_by(file) %>% arrange(time) %>% mutate(
         delta_p = pTotal - pTotal[row_number() == 1]
         ,delta_c = cTotal - cTotal[row_number() == 1]
     )
 
-ggplot(data=data_numeric_solver_delta %>% filter(time==500)
+ggplot(data=data_numeric_solver_delta %>% filter(time==t_delta)
         ,mapping=aes(x=fct_reorder(single_or_mixed,order)
                      ,y=delta_c)) + 
     geom_bar(stat="identity") +
@@ -185,18 +196,21 @@ ggplot(data=data_numeric_solver_delta %>% filter(time==500)
 
 ggsave(file="selection_with_antibiotics_low_cost.pdf")
 
+
+
 #################### NO ANTIBIOTICS ####################
 
 rm(data_numeric_solver)
 
+# get the path with the original data
 path=file.path(main_path, "img/selection/no_antibiotics/")
 
 
 # get the data from the numeric solver
 data_numeric_solver <- get_data(
         path=path, 
-        tdata=c(0,50,100, 500, 1000, 5000, 9000),
-        filename_regexp="^output_.*"
+        tdata=c(0,50,100, t_delta, 1000, 5000, 9000),
+        filename_regexp="^output_antibio.*"
 )
 
 # calculate conditional frequencies
@@ -205,14 +219,16 @@ data_numeric_solver <- mutate(data_numeric_solver,
         ,cTotal=(ICG1 + ICG2 + SC) / N
         )
 
-# calculate deltas
+# calculate deltas, i.e., 
+#difference in frequency between time t=x and t=0
 data_numeric_solver_delta = 
     data_numeric_solver %>% group_by(file) %>% arrange(time) %>% mutate(
         delta_p = pTotal - pTotal[row_number() == 1]
         ,delta_c = cTotal - cTotal[row_number() == 1]
     )
-print(data_numeric_solver_delta %>% filter(time==500))
-ggplot(data=data_numeric_solver_delta %>% filter(time==500)
+
+print(data_numeric_solver_delta %>% filter(time==t_delta))
+ggplot(data=data_numeric_solver_delta %>% filter(time==t_delta)
         ,mapping=aes(x=fct_reorder(single_or_mixed,order)
                      ,y=delta_c)) + 
     geom_bar(stat="identity") +
