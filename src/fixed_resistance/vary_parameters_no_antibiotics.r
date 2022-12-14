@@ -28,8 +28,8 @@ default_params <- list(
         ,dICG2=1
         ,init_popsize_P=30   # initial population sizes
         ,init_popsize_C=30
-        ,init_popsize_PG1=1
-        ,init_popsize_PG2=1
+        ,init_popsize_PG1=c(0,1)
+        ,init_popsize_PG2=c(0,1)
         ,init_popsize_PpG1G2=0
         ,init_popsize_PcG1G2=0 
         ,pival = 1.0  # resistance of hosts to G1
@@ -42,15 +42,15 @@ default_params <- list(
 
 # parameters with antibiotics
 FG1_antibiotic <- seq(2,10,0.5)
-d_susc <- 5
+d_susc <- 5 # 
 d_single <- d_susc
 d_double <- 1
 
 antibiotics_params <- list(
         FG1=FG1_antibiotic
         ,FG2=10
-        ,psiG1=c(1)
-        ,psiG2=1
+        ,psiG1=c(10)
+        ,psiG2=10
         ,dSP=d_susc # death rates susceptibe
         ,dSC=d_susc
         ,dIPG1=d_single # death rates infecteds
@@ -60,9 +60,9 @@ antibiotics_params <- list(
 #
 antibiotics_params <- modifyList(default_params, antibiotics_params)
 
-d_susc <- 1
-d_single <- 5
-d_double <- 5
+d_susc <- 1 # far lower death rate due to lack of antibiotics
+d_single <- 1.5 # death rate of single and double plasmids because carrying plasmid
+d_double <- 2
 
 no_antibiotics_params <- list(
         FG1=1
