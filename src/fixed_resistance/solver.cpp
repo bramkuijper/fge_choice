@@ -206,6 +206,8 @@ Solver::Solver(Parameters &parms) :
 // write a line to the data file
 void Solver::write_data()
 {
+    update_N();
+
     data_file << time_step << ";";
 
     // totals for each of the categories c and p

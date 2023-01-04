@@ -95,21 +95,22 @@ single_multipanel <- function(
     # collect the data from the files
     for (file_idx in 1:length(file_names))
     {
+        # make the path to the data file with the time
+        # course data of infection
         file_time_course = file.path(
                 path, file_names[[file_idx]]
         )
         
+        # get the final line number of the data
+        # if you look at the data, the data part is followed
+        # by a listing of the parameters in which we are not interested
        last_line_i = get_last_line_number(file_name = file_time_course)
             
+       # get the actual data
         time_series_data <- read_delim(file = file_time_course
                                        ,delim =";"
                                        ,n_max = last_line_i - 1)
     
-    
-        clip <- function(x,xmin=0,xmax=1)
-        {
-            return(ifelse(x < xmin, xmin, ifelse(x > xmax, xmax, x)))
-        }
     
         time_series_data <- time_series_data %>% mutate(
             M13s = IPG1 + ICG1
@@ -118,7 +119,6 @@ single_multipanel <- function(
             ,ImmuneM13d= (ICG2) / (ICG1 + ICG2 + SC)
             ,SensitiveM13s= (IPG1) / (IPG1 + IPG2 + SP)
             ,SensitiveM13d= (IPG2) / (IPG1 + IPG2 + SP)
-            ,fc = clip((ICG1 + ICG2 + SC) / (ICG1 + ICG2 + SC + IPG1 + IPG2 + SP),xmin=0.0,xmax=1.0)
             ,antibiotics= antibiotics[[file_idx]]
         )
     
@@ -146,23 +146,23 @@ single_multipanel <- function(
                 ,ctype=ifelse(regexpr(pattern="Immune",text=Type)!=-1,
                               "Immune","Susceptible")
                 )
-    
-    # now make the plot
-    ggplot(data=all_time_series_data_l
-            ,mapping=aes(x=time
-                         ,y=Frequency)) +
-        geom_line(mapping = aes(colour=ctype)) +
-    #    facet_grid(~ fct_relevel(label,"M13s_only","M13d_only")) +
-        facet_grid(antibiotics~m13) +
-        theme_classic(base_size=16) +
-        scale_colour_brewer(palette = "Set1") +
-        xlab("Time") +
-        ylab("Frequency") +
-        ylim(0,1) + plot_annotation(
-        title=paste0("FG1: "
-            ,parameters["FG1"]))
-    
-    ggsave(file=file_out) 
+
+    # make a separate graph for antibiotic and no antibiotic
+    for (antibiotic_i in sort(unique(all_time_series_data_l$antibiotics)))
+    {
+        # now make the plot
+        ggplot(data=filter(all_time_series_data_l,antibiotics == antibiotic_i)
+                ,mapping=aes(x=time
+                             ,y=Frequency)) +
+            geom_line(mapping = aes(colour=ctype)) +
+            facet_grid(~m13) +
+            theme_classic(base_size=16) +
+            scale_colour_brewer(palette = "Set1") +
+            xlab("Time") +
+            ylab("Frequency") +
+            ylim(0,1)         
+        ggsave(file=paste0(antibiotic_i,file_out),width=10,height=5) 
+    } # end antibiotic_i
 } # end single_multipanel
 
 
@@ -171,8 +171,9 @@ summary_data <- read_delim(file = "summary_iterations.csv"
                            ,delim = ";")
 
 # first get the antibiotic data
-summary_data_antibiotic <- summary_data %>% filter(FG1 > 1)
+summary_data_antibiotic <- summary_data %>% filter(FG1 == 6)
 
+# then get the no antibiotic data
 summary_data_no_antibiotic <- summary_data %>% filter(FG1 == 1)
 
 # should be a single line of no antibiotic data

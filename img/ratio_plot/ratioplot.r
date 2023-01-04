@@ -116,7 +116,7 @@ path = "../time_course_facets/"
 
 # first get the summary file
 summary_data <- read_delim(
-        file=file.path(path,"summary.csv")
+        file=file.path(path,"summary_iterations.csv")
         ,delim=";")
 
 # find an antibiotic file that matches the proper value of psi and FG1
@@ -149,18 +149,21 @@ M13d_ratio_no_anti <- data_numeric_solver_no_antibiotic$ICG2 / data_numeric_solv
 M13s_ratio <- data_numeric_solver$ICG1 / data_numeric_solver$IPG1
 M13d_ratio <- data_numeric_solver$ICG2 / data_numeric_solver$IPG2
 
-# now build a box plot of the ratios
+# now build a dot plot of the ratios
 the.ratios <- data.frame(
-        x=c(1,2,3,4)
+        x=c(1,2,1,2)
         ,y=c(M13s_ratio_no_anti
                 ,M13d_ratio_no_anti
                 ,M13s_ratio
                 ,M13d_ratio)
         ,labels=c("M13s","M13d","M13s","M13d")
+        ,antibiotic=c("no","no","yes","yes")
     )
 
+the.ratios.a.no <- filter(the.ratios, antibiotic == "no")
 
-ggplot(data=the.ratios
+# make a plot that plots the ratios without antibiotics
+ggplot(data=the.ratios.a.no
         ,mapping=aes(x=factor(x)
                 ,y=y)) +
     geom_point(size=5,colour="#337167") +
@@ -168,8 +171,24 @@ ggplot(data=the.ratios
     xlab("") +
     ylab("Ratio of infection\nimmune/sensitive") +
     geom_hline(yintercept=1.0,linetype="dashed") +
-    scale_x_discrete(breaks=waiver(), labels=the.ratios$labels)  +
+    scale_x_discrete(breaks=waiver(), labels=the.ratios.a.no$labels)  +
     scale_y_continuous(breaks=c(0.0,0.25,0.5,0.75,1.0,1.25)) 
 
-ggsave("ratio_plot.pdf")
+ggsave("ratio_plot_no_antibiotics.pdf")
 
+
+the.ratios.a.yes <- filter(the.ratios, antibiotic == "yes")
+
+# make a plot that plots the ratios without antibiotics
+ggplot(data=the.ratios.a.yes
+        ,mapping=aes(x=factor(x)
+                ,y=y)) +
+    geom_point(size=5,colour="#337167") +
+    theme_classic(base_size=18) +
+    xlab("") +
+    ylab("Ratio of infection\nimmune/sensitive") +
+    geom_hline(yintercept=1.0,linetype="dashed") +
+    scale_x_discrete(breaks=waiver(), labels=the.ratios.a.yes$labels)  +
+    scale_y_continuous(breaks=c(0.0,0.25,0.5,0.75,1.0,1.25)) 
+
+ggsave("ratio_plot_with_antibiotics.pdf")

@@ -1,10 +1,7 @@
 library("tidyverse")
 library("here")
 library("cowplot")
-
-main_path = here()
-
-path=file.path(main_path, "img/fc_vs_fbminusfg/data")
+library("patchwork")
 
 # obtain the final line of the actual simulation data
 # of each file
@@ -81,6 +78,15 @@ get_data <- function(path, tdata, filename_regexp)
     return(all_data)
 } # end get_data()
 
+########## PATHS, PARAMETERS, ETC ##########
+
+main_path = here()
+
+path=file.path(main_path, "img/CI_initial_frequency/data_original")
+
+
+
+
 if (!exists("data_numeric_solver"))
 {
     # get the data from the numeric solver
@@ -99,6 +105,8 @@ data_numeric_solver <- mutate(
         ,pGc=ICG2/(SC + ICG1 + ICG2)
         ,pGp=IPG2/(SP + IPG1 + IPG2)
         ,fc=(ICG1 + ICG2 + SC)/N 
+        ,fM13s=(ICG1 + IPG1)/N 
+        ,fM13d=(ICG2 + IPG2)/N 
         )
 
 # then calculate differences for each series of times
@@ -109,15 +117,27 @@ data_numeric_solver_t <- data_numeric_solver %>% group_by(file) %>% arrange(time
             ,delta_pGp = pGp - pGp[row_number() == 1]
             ,delta_pBc = pBc - pBc[row_number() == 1]
             ,delta_pBp = pBp - pBp[row_number() == 1]
+            ,delta_M13s = fM13s - fM13s[row_number() == 1]
+            ,delta_M13d = fM13d - fM13d[row_number() == 1]
             ,init_fc=fc[row_number() == 1]
             )
 
+# make two tibbles in long format: one with the change in conditional 
+# frequencies, the other with the change in overall freq of M13s vs M13d
 data_numeric_solver_tl <- data_numeric_solver_t %>% filter(time > 0) %>%
     pivot_longer(
         ,cols=c(delta_pGc, delta_pBc, delta_pGp, delta_pBp)
         ,names_to="conditional_type"
         ,values_to="conditional_value") 
 
+data_numeric_solver_tl_M13 <- data_numeric_solver_t %>% filter(time > 0) %>%
+    pivot_longer(
+        ,cols=c(delta_M13s, delta_M13d)
+        ,names_to="FGE_type"
+        ,values_to="FGE_freq") 
+
+
+# first global plot of conditional change over x timesteps
 ggplot(data=data_numeric_solver_tl
         ,mapping=aes(x=init_fc, y = conditional_value)) +
     geom_line(mapping=aes(colour=conditional_type)) +
@@ -131,19 +151,37 @@ ggplot(data=data_numeric_solver_tl
     ylab("Change in frequency of M13") +
     ylim(-0.1,1)
 
-ggsave("vary_fc.pdf")
+ggsave("vary_fc_across_time_points.pdf")
 
 
-ggplot(data=filter(data_numeric_solver_tl,time == 100)
+# patchwork plot of the two figs 
+# spread out over CI or total 
+p1 <- ggplot(data=filter(data_numeric_solver_tl_M13, time ==  100)
+        ,mapping=aes(x=init_fc, y = FGE_freq)) + 
+    geom_line(mapping=aes(colour=FGE_type),size=1) +
+    theme_classic(base_size=22) +
+    xlab("Initial frequency of CI") +
+    ylab("Change in frequency of M13") +
+    ylim(-0.05,1.0)
+
+p2 <- ggplot(data=filter(data_numeric_solver_tl,time == 100)
         ,mapping=aes(x=init_fc, y = conditional_value)) +
     geom_line(mapping=aes(colour=conditional_type),size=1) +
     scale_colour_manual(name=""
             ,values=c("#E69F00", "#56B4E9", "#009E73", "#0072B2", "#D55E00", "#CC79A7")
             ,breaks=c("delta_pGc","delta_pBc","delta_pGp","delta_pBp")
             ,labels=c("M13d | CI", "M13s | CI", "M13d | S", "M13s | S")) +
-    theme_classic() +
+    theme_classic(base_size=22) +
     xlab("Initial frequency of CI") +
     ylab("Change in frequency of M13") +
-    ylim(-0.1,1)
+    ylim(-0.05,1)
 
-ggsave("vary_fc_t100.pdf",width=5,height=5)
+
+p1 | p2
+
+ggsave("vary_fc_timepoint_100.pdf",width=15,height=5)
+
+
+
+
+

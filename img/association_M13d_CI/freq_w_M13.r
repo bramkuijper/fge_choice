@@ -264,7 +264,9 @@ g1 <- ggplot(data=data_to_plot
     annotate(geom="text"
             ,x=group_vals[[6]] + (group_vals[[8]] - group_vals[[6]])/2.0
             ,y=0.9
-            ,label=c("Mixed M13"))
+            ,label=c("Mixed M13")) +
+    
+    ylab("Frequency")
 
 gt <- ggplot_gtable(ggplot_build(g1))
 gt$layout$clip[gt$layout$name=="panel"] <- "off"
