@@ -96,7 +96,9 @@ get_data <- function(path, tdata, filename_regexp)
     {
         last_line_i = get_last_line_number(file_name = file_i)
     
-        data <- read_delim(file=file_i, n_max=last_line_i - 1)
+        data <- read_delim(file=file_i
+                ,n_max=last_line_i - 1
+                )
 
         # determine type
         data <- find_out_type(data)    

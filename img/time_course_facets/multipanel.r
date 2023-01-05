@@ -90,15 +90,13 @@ single_multipanel <- function(
     
     all_time_series_data <- NULL
     
-    path ="."
-    
     # collect the data from the files
     for (file_idx in 1:length(file_names))
     {
         # make the path to the data file with the time
         # course data of infection
         file_time_course = file.path(
-                path, file_names[[file_idx]]
+                file_names[[file_idx]]
         )
         
         # get the final line number of the data
@@ -150,6 +148,7 @@ single_multipanel <- function(
     # make a separate graph for antibiotic and no antibiotic
     for (antibiotic_i in sort(unique(all_time_series_data_l$antibiotics)))
     {
+        write_delim(delim=";",x=all_time_series_data_l,file=paste0("final_table_antibiotic_",antibiotic_i,".csv"))
         # now make the plot
         ggplot(data=filter(all_time_series_data_l,antibiotics == antibiotic_i)
                 ,mapping=aes(x=time
@@ -166,8 +165,10 @@ single_multipanel <- function(
 } # end single_multipanel
 
 
+current_dir <- file.path(main_path,"img/time_course_facets")
+
 # first read in the summary of all the data files
-summary_data <- read_delim(file = "summary_iterations.csv"
+summary_data <- read_delim(file = file.path(current_dir, "summary_iterations.csv")
                            ,delim = ";")
 
 # first get the antibiotic data
@@ -182,12 +183,17 @@ stopifnot(nrow(summary_data_no_antibiotic) == 1)
 for (row_i in 1:nrow(summary_data_antibiotic))
 {
     file_antibiotics <- summary_data_antibiotic[row_i,] %>% pull(file)
-    
+    file_no_antibiotics <- summary_data_no_antibiotic %>% pull(file)
+
+    file_antibiotics_full_path <- file.path(current_dir, file_antibiotics)
+    file_no_antibiotics_full_path <- file.path(current_dir, file_no_antibiotics)
+
     stopifnot(nrow(file_antibiotics) == 1)
-    
+    stopifnot(nrow(file_no_antibiotics) == 1)
+
     single_multipanel(
-            file_antibiotic=file_antibiotics
-            ,file_no_antibiotic=summary_data_no_antibiotic %>% pull(file)
+            file_antibiotic=file_antibiotics_full_path
+            ,file_no_antibiotic=file_no_antibiotics_full_path
             ,file_out=paste0(basename(file_antibiotics),".pdf")
             ,tmax=1000)
 }
