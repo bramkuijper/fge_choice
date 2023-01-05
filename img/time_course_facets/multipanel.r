@@ -144,7 +144,6 @@ single_multipanel <- function(
                 ,ctype=ifelse(regexpr(pattern="Immune",text=Type)!=-1,
                               "Immune","Susceptible")
                 )
-
     # make a separate graph for antibiotic and no antibiotic
     for (antibiotic_i in sort(unique(all_time_series_data_l$antibiotics)))
     {
@@ -160,7 +159,7 @@ single_multipanel <- function(
             xlab("Time") +
             ylab("Frequency") +
             ylim(0,1)         
-        ggsave(file=paste0(antibiotic_i,file_out),width=10,height=5) 
+        ggsave(file=paste0(file_out,antibiotic_i,".pdf"),width=10,height=5) 
     } # end antibiotic_i
 } # end single_multipanel
 
@@ -194,6 +193,6 @@ for (row_i in 1:nrow(summary_data_antibiotic))
     single_multipanel(
             file_antibiotic=file_antibiotics_full_path
             ,file_no_antibiotic=file_no_antibiotics_full_path
-            ,file_out=paste0(basename(file_antibiotics),".pdf")
+            ,file_out=paste0(current_dir,"/",basename(file_antibiotics))
             ,tmax=1000)
 }
