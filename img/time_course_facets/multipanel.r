@@ -113,10 +113,12 @@ single_multipanel <- function(
         time_series_data <- time_series_data %>% mutate(
             M13s = IPG1 + ICG1
             ,M13d = IPG2 + ICG2
+            ,Nnew = ICG1 + ICG2 + SC + IPG1 + IPG2 + SP
             ,ImmuneM13s= (ICG1) / (ICG1 + ICG2 + SC)
             ,ImmuneM13d= (ICG2) / (ICG1 + ICG2 + SC)
             ,SensitiveM13s= (IPG1) / (IPG1 + IPG2 + SP)
             ,SensitiveM13d= (IPG2) / (IPG1 + IPG2 + SP)
+            ,D = ICG2/Nnew * IPG1/Nnew - ICG1 / Nnew * IPG2 / Nnew
             ,antibiotics= antibiotics[[file_idx]]
         )
     
@@ -161,6 +163,18 @@ single_multipanel <- function(
             ylim(0,1)         
         ggsave(file=paste0(file_out,antibiotic_i,".pdf"),width=10,height=5) 
     } # end antibiotic_i
+    
+
+    # make another plot for the linkage disequilibria
+    ggplot(data=all_time_series_data
+                ,mapping=aes(x=time
+                             ,y=D)) +
+            geom_line(mapping = aes(colour=antibiotics)) +
+            theme_classic(base_size=16) +
+            scale_colour_brewer(palette = "Set1") +
+            xlab("Time") +
+            ylab("LD") 
+    ggsave(file=paste0(file_out,"linkage_disequilibria.pdf"),width=10,height=5) 
 } # end single_multipanel
 
 
@@ -194,5 +208,5 @@ for (row_i in 1:nrow(summary_data_antibiotic))
             file_antibiotic=file_antibiotics_full_path
             ,file_no_antibiotic=file_no_antibiotics_full_path
             ,file_out=paste0(current_dir,"/",basename(file_antibiotics))
-            ,tmax=1000)
+            ,tmax=4000)
 }
