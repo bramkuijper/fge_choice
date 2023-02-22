@@ -114,18 +114,19 @@ Symbol & Definition\tabularnewline
     $\sensitive$ & Sensitive host allele (prone to infection by any MGE) \tabularnewline
     $\badFGE$ & Modestly beneficial MGE \tabularnewline
     $\goodFGE$ & Highly beneficial MGE \tabularnewline
-    $S_{i}$ & Density of susceptible hosts carrying allele $i \in {\immune,\sensitive}$ \tabularnewline
-    $I_{ij}$ & Density of infected hosts carrying resistance allele $i \in {\immune,\sensitive}$ and infected by an MGE of type $j \in {\badFGE,\goodFGE}$  \tabularnewline 
+    $S_{i}$ & Density of susceptible hosts carrying allele $i \in \{\immune,\sensitive\}$ \tabularnewline
+    $I_{ij}$ & Density of infected hosts carrying resistance allele $i \in \{\immune,\sensitive\}$ and infected by an MGE of type $j \in \{\badFGE,\goodFGE\}$  \tabularnewline 
+    $I$ & Total density of all infected hosts, $I = \sum_{ij} I_{ij}$   \tabularnewline 
     $N$ & Total population density \tabularnewline 
-            $p_{\immune}$ & Frequency of the CRISPR immune allele in infected hosts, $p_{\immune} = (I_{\immune \badFGE} + I_{\immune \goodFGE})/I$, $p_{\sensitive} = 1-p_{\immune}$ \tabularnewline
-            $q_{\immune}$ & Frequency of the choosy allele in infected hosts, $p_{\immune} = (I_{\immune \badFGE} + I_{\immune \goodFGE})/I$ \tabularnewline
+            $p_{\immune}$ & Frequency of the CRISPR immune allele in infected hosts, $p_{\immune} = (I_{\immune \badFGE} + I_{\immune \goodFGE})/I$ where $p_{\sensitive} = 1-p_{\immune}$ \tabularnewline
+            $q_{\goodFGE}$ & Frequency of the $\goodFGE$ MGE, $q_{\goodFGE} = (I_{\immune \goodFGE} + I_{\sensitive \goodFGE})/I$ where $q_{\badFGE} = 1 - q_{\sensitive}$ \tabularnewline
             $b_{S}, b_{\badFGE}, b_{\goodFGE}$ & Birth rates of susceptible hosts, hosts infected with $\badFGE$, hosts infected with $\goodFGE$ respectively \tabularnewline
             $d_{S}, d_{\badFGE}, d_{\goodFGE}$ & Death rates of susceptible hosts, hosts infected with $\badFGE$, hosts infected with $\goodFGE$ respectively \tabularnewline
             $r_{S}, r_{\badFGE}, r_{\goodFGE}$ & Growth rates of susceptible hosts, hosts infected with $\badFGE$, hosts infected with $\goodFGE$ respectively \tabularnewline 
             $\gamma_{\badFGE}, \gamma_{\goodFGE}$ & Recovery rates of hosts infected with $\badFGE$, $\goodFGE$ respectively \tabularnewline
             $\beta_{\badFGE}, \beta_{\goodFGE}$ & Transmission rates of $\badFGE$, $\goodFGE$ MGEs respectively \tabularnewline
             $k$ & Cost to host of carrying a CRISPR immune allele, measured by a reduction in growth rate $r_{i}$ \tabularnewline
-            $\pi$ & Probability of resistance against infections by $\badFGE$ \tabularnewline
+            $\pi$ & Probability of resisting an infection by an $\badFGE$ MGE \tabularnewline
             \hline 
 \end{tabular}
 \caption{\label{tab:notation}}
@@ -184,15 +185,14 @@ The change in $N$ is then given by
 with $r_{S} = b_{S} - d_{S}$, $r_{\goodFGE} = b_{\goodFGE} - d_{\goodFGE}$ and $r_{\badFGE} = b_{\badFGE} - d_{\badFGE}$.
 
 \section{Evolutionary dynamics of CRISPR immunity against beneficial MGEs}
-To understand the underlying forces of selection
-acting on CRISPR immune hosts, we consider the change in frequency $f_{\immune} = (S_{\immune} + I_{\immune\badFGE} + I_{\immune\goodFGE})/N$ of CRISPR immune hosts (either susceptible or infected). Ignoring rare mutations, the frequency $f_{\immune}$ of hosts that are CRISPR immune changes according to the following differential equation
+To understand the different forces of selection
+acting on CRISPR immune hosts, we consider the change in frequency $p_{\immune} = (I_{\immune\badFGE} + I_{\immune\goodFGE})/N$ of infected CRISPR immune hosts, where $p_{\sensitive} = 1-p{\immune}$ reflects the frequency of sensitive infected hosts. Ignoring rare mutations, $p_{\immune}$ changes according to the following differential equation
 \begin{IEEEeqnarray}{rl}
-    \frac{\mathrm{d} f_{\immune}}{\mathrm{d} t} &= 
-    \frac{1}{N} \left(
-        \frac{\mathrm{d}S_{\immune}}{\mathrm{d}t} +
+    \frac{\mathrm{d} p_{\immune}}{\mathrm{d} t} &= 
+    \frac{1}{I} \left(
         \frac{\mathrm{d} I_{\immune\goodFGE}}{\mathrm{d}t} + 
         \frac{\mathrm{d} I_{\immune\badFGE}}{\mathrm{d}t} 
-        - f_{\immune} \frac{\mathrm{d}N}{\mathrm{d}t} 
+        - p_{\immune} \frac{\mathrm{d}I}{\mathrm{d}t} 
     \right)\nonumber \\
     %
     &= f_{\immune}\left(1-f_{\immune}\right)\left\{ r_{\badFGE}\left[p_{\badFGE\mid \immune}\left(1-k\right)-p_{\badFGE\mid \sensitive}\right] \right . \nonumber \\ 
