@@ -120,6 +120,7 @@ Symbol & Definition\tabularnewline
     $N$ & Total population density \tabularnewline 
             $p_{\immune}$ & Frequency of the CRISPR immune allele in infected hosts, $p_{\immune} = (I_{\immune \badFGE} + I_{\immune \goodFGE})/I$ where $p_{\sensitive} = 1-p_{\immune}$ \tabularnewline
             $q_{\goodFGE}$ & Frequency of the $\goodFGE$ MGE, $q_{\goodFGE} = (I_{\immune \goodFGE} + I_{\sensitive \goodFGE})/I$ where $q_{\badFGE} = 1 - q_{\sensitive}$ \tabularnewline
+            $D$ & Linkage disequilibrium measuring the association between host alleles and MGE type (i.e., the excess in frequency of hosts with $\immune$ and $\goodFGE$ and hosts with $\sensitive$ and $\badFGE$ relative to other hosts). \tabularnewline
             $b_{S}, b_{\badFGE}, b_{\goodFGE}$ & Birth rates of susceptible hosts, hosts infected with $\badFGE$, hosts infected with $\goodFGE$ respectively \tabularnewline
             $d_{S}, d_{\badFGE}, d_{\goodFGE}$ & Death rates of susceptible hosts, hosts infected with $\badFGE$, hosts infected with $\goodFGE$ respectively \tabularnewline
             $r_{S}, r_{\badFGE}, r_{\goodFGE}$ & Growth rates of susceptible hosts, hosts infected with $\badFGE$, hosts infected with $\goodFGE$ respectively \tabularnewline 
@@ -156,7 +157,7 @@ The combined dynamics of CRISPR immune vs sensitive genotypes and both types of 
     \\
 % dIimmuneGdt
     \frac{\mathrm{d}I_{\immune \goodFGE}}{\mathrm{d}t} &= (1-k) b_{\goodFGE} I_{\immune \goodFGE} + \beta_{\goodFGE} S_{\immune} I_{\goodFGE} - \left [ (1-k) d_{\goodFGE} + \gamma_{\goodFGE} \right ] I_{\immune\goodFGE} \label{eq:dIcBdt}
-\end{IEEEeqnarray} where the first term $b_{x}$ of each equation reflects reflects the fecundity of an host of type $x \in {S,\badFGE,\goodFGE}$ given by the function $b_{x} = F_{x} \left( 1-\kappa N \right)$. 
+\end{IEEEeqnarray} where the first term $b_{x}$ of each equation reflects the fecundity of an host of type $x \in {S,\badFGE,\goodFGE}$ given by the function $b_{x} = F_{x} \left( 1-\kappa N \right)$. 
 Here, $F_{x}$ reflects how birth rates differ between susceptible hosts vs hosts infected by $\badFGE$ or $\goodFGE$ MGEs. Moreover, fecundity is assumed to be density
 dependent, measured by intensity $\kappa$, where
 $N = S_{\sensitive} + S_{\immune} +I_{\sensitive\goodFGE} + I_{\sensitive\badFGE} + I_{\immune\goodFGE} + I_{\immune\badFGE}$ is the total
@@ -184,52 +185,42 @@ The change in $N$ is then given by
 \end{IEEEeqnarray}
 with $r_{S} = b_{S} - d_{S}$, $r_{\goodFGE} = b_{\goodFGE} - d_{\goodFGE}$ and $r_{\badFGE} = b_{\badFGE} - d_{\badFGE}$.
 
-\section{Evolutionary dynamics of CRISPR immunity against beneficial MGEs}
+\section{Evolutionary dynamics of CRISPR immunity}
 To understand the different forces of selection
-acting on CRISPR immune hosts, we consider the change in frequency $p_{\immune} = (I_{\immune\badFGE} + I_{\immune\goodFGE})/N$ of infected CRISPR immune hosts, where $p_{\sensitive} = 1-p{\immune}$ reflects the frequency of sensitive infected hosts. Ignoring rare mutations, $p_{\immune}$ changes according to the following differential equation
+acting on CRISPR immune hosts, we consider the change in frequency $p_{\immune} = (I_{\immune\badFGE} + I_{\immune\goodFGE})/N$ of infected CRISPR immune hosts, where $p_{\sensitive} = 1-p{\immune}$ reflects the frequency of sensitive infected hosts. Ignoring rare mutations, the change in frequency of CRISPR immunity is then given by
 \begin{IEEEeqnarray}{rl}
     \frac{\mathrm{d} p_{\immune}}{\mathrm{d} t} &= 
     \frac{1}{I} \left(
         \frac{\mathrm{d} I_{\immune\goodFGE}}{\mathrm{d}t} + 
         \frac{\mathrm{d} I_{\immune\badFGE}}{\mathrm{d}t} 
         - p_{\immune} \frac{\mathrm{d}I}{\mathrm{d}t} 
-    \right)\nonumber \\
+    \right) \\
     %
-    &= f_{\immune}\left(1-f_{\immune}\right)\left\{ r_{\badFGE}\left[p_{\badFGE\mid \immune}\left(1-k\right)-p_{\badFGE\mid \sensitive}\right] \right . \nonumber \\ 
+    &= - p_{\immune}\left(1-p_{\immune}\right) k \left [q_{\goodFGE} r_{\goodFGE}  + \left ( 1 - q_{\goodFGE} \right ) r_{\badFGE}  \right ]  \nonumber \\
     %
-     & \phantom{f_{\immune} \left( 1 - f_{\immune} \right)\quad } +r_{\goodFGE}\left[p_{\goodFGE\mid \immune}\left(1-k\right)-p_{\goodFGE\mid \sensitive}\right] \nonumber \\
+    & - p_{\immune} S_{\sensitive} \left [ \left ( 1 - q_{\goodFGE} \right ) \beta_{\badFGE} + q_{\goodFGE} \beta_{\goodFGE} \right ] \nonumber \\
     %
-    & \phantom{f_{\immune} \left( 1 - f_{\immune} \right)\quad } + \left .
-    r_{S}\left[p_{S\mid \immune}\left(1-k\right)-p_{S\mid \sensitive}\right]\right\} \label{eq:dfcdtexpand}
-%    &= f_{c} \left( 1 - f_{c} \right) \left[
-%        p_{\badFGE\mid c} r_{\badFGE} \left( \pi \right ) 
-%        + p_{\goodFGE \mid c} r_{\goodFGE} \left ( \pi\right )
-%        + p_{S \mid c} r_{S} \left ( \pi\right ) \right . \nonumber \\
-%    &\phantom{f_{c} \left( 1 - f_{c} \right)\quad } - \left .
-%        \left (p_{\badFGE \mid \sensitive} r_{\badFGE} \left ( 0 \right ) 
-%        + p_{\goodFGE \mid \sensitive} r_{\goodFGE} \left( 0 \right)
-%        + p_{S \mid \sensitive} r_{S} \left ( 0 \right ) \right )
-%        \right ], \label{eq:dfcdtexpand}
-%    &= f_{c} \left ( 1 - f_{c} \right ) \left (r_{c} - r_{\sensitive} \right ), 
+    & + \left ( 1 - p_{\immune} \right ) S_{\immune} \left [ \left ( 1 - \pi \right )\left ( 1 - q_{\goodFGE} \right ) \beta_{\badFGE}  + q_{\goodFGE} \beta_{\goodFGE}   \right ] \nonumber \\
+    %
+    & + D \left [ \gamma_{\badFGE} - \gamma_{\goodFGE} + \left( r_{\goodFGE} - r_{\badFGE} \right) \left ( 1 - \left (1 - p_{\immune} \right) k \right )  \right ]
+    \label{eq:dfcdtexpand}
 \end{IEEEeqnarray}
-%where $r_{c}=p_{\badFGE\mid c} r_{\badFGE} \left( \pi \right ) 
-%        + p_{\goodFGE \mid c} r_{\goodFGE} \left ( \pi \right )
-%        + p_{S \mid c} r_{S} \left ( \pi \right )$ and $r_{\sensitive}=p_{\badFGE \mid \sensitive} r_{\badFGE} \left ( 0 \right ) 
-%        + p_{\goodFGE \mid \sensitive} r_{\goodFGE} \left( 0 \right)
-%        + p_{S \mid \sensitive} r_{S} \left ( 0 \right )$ 
-%are the average growth rates of choosy and promiscuous alleles, obviously only involving vertical transmission.
-where $p_{\badFGE\mid \immune} = I_{\immune\badFGE} / \left(S_{\immune} + I_{\immune\badFGE} + I_{\immune\goodFGE} \right )$, $p_{\goodFGE \mid \immune} = I_{\immune\goodFGE} / \left(S_{\immune} + I_{\immune\badFGE} + I_{\immune\goodFGE} \right )$ and $p_{S \mid \immune} = 1 - p_{\badFGE \mid \immune} - p_{\goodFGE \mid \immune}$ are the conditional frequencies of hosts that are respectively infected with $\badFGE$ or $\goodFGE$ MGEs, or are uninfected, given that they carry the CRISPR immune genotype $\immune$ (conditional frequencies involving the sensitive allele $\sensitive$ can be derived in an analogous fashion). These conditional frequencies in eq. (\ref{eq:dfcdtexpand}) measure the associations between $\immune$ and $\sensitive$ alleles to the three different backgrounds $\badFGE$, $\goodFGE$ and $S$. Conversely, when $\sensitive$ and $\immune$ alleles are not associated to their specific backgrounds ($p_{\badFGE\mid \immune} = p_{\badFGE \mid \sensitive}$, $p_{\goodFGE\mid \immune} = p_{\goodFGE\mid \sensitive}$ and  $p_{S \mid \immune} = p_{S \mid \sensitive}$), we have $\mathrm{d} f_{\immune} / \mathrm{d}t  = -k f_{\immune}(1-f_{\immune})(r_{\badFGE}p_{\badFGE\mid \immune} + r_{\goodFGE} p_{\goodFGE\mid \immune} + r_{S} p_{S \mid \immune}) < 0$, so that the $\immune$ allele would decrease in frequency in absence of these associations. 
+The first line of eq. (\ref{eq:dfcdtexpand}) is strictly negative and reflects a decrease in CRISPR immunity due to a growth rate cost $k$ it imposes on its bearer. Note that  $p_{\immune} \left ( 1 - p_{\immune})$ reflects the genetic variance in immunity alleles, followed by a term that reflects natural selection due to costs that accumulate to hosts infected with $\badFGE$ and $\goodFGE$ MGEs respectively.
 
-Consequently, the first line in eq. (\ref{eq:dfcdtexpand}) then highlights the costs to a $\immune$ allele due to its association with a suboptimal $\badFGE$ MGE (suffering a lower growth rate relative to $\goodFGE$-infected hosts). Similarly, the third line reflects a direct cost to a $\immune$ allele of being in an uninfected host (suffering a lower growth rate $r_{S}$ relative to infected hosts). Finally, the second line reflects the benefits of being associated with a $\goodFGE$ MGE that is resistant to both types of antibiotic. In case $r_{\goodFGE}>> r_{\badFGE},r_{S}$, the terms on the second line involving the conditional frequencies $q_{\goodFGE \mid \immune}$ and $q_{\goodFGE \mid \sensitive}$ are expected to dominate in the evolution of $\immune$.
+The second line is again strictly negative and reflects a decrease in frequency of the $\immune$ allele among infected individuals, because susceptible hosts carrying the $\sensitive$ allele become infected. Either a susceptible $\sensitive$ host becomes infected by a $\badFGE$ MGE (at rate $S_{\sensitive}(1-q_{\goodFGE}) \beta_{\badFGE}$) or by a $\goodFGE$ MGE (at rate $S_{\sensitive}q_{\goodFGE}\beta_{\goodFGE}$). 
 
-Hence, eq. (\ref{eq:dfcdtexpand}) shows that the association $p_{\goodFGE \mid \immune}$ vs $p_{\goodFGE \mid \sensitive}$ is important, the dynamics of which will be developed below.
+The third line reflects an increase in frequency of the $\immune$ allele among infected individuals, as susceptible hosts carrying the $\immune$ allele become infected. Such hosts either become infected by a $\badFGE$ MGE (at rate $S_{\immune}(1-\pi)\beta_{\badFGE}\left(1-q_{\goodFGE}\right))$ or by a good $\goodFGE$ MGE (at rate $S_{\immune}\beta_{\goodFGE} q_{\goodFGE}$). 
 
+Finally, the fourth line reflects changes in the frequency of $\immune$ due to an assocation $D$ between  $\immune$ alleles and $\goodFGE$ MGEs (and similarly, an association between $\sensitive$ and $\badFGE$). We find that this association causes $p_{\immune}$ to increase whenever $(r_{\goodFGE} > r_{\badFGE})(1-(1-p_{\immune})k)$, i.e., whenever growth due to infection by the $\goodFGE$ FGE is larger than that of the $\badFGE$ FGE (weighed by a term that discounts any fecundity costs $k$ on carrying $\immune$ rather than $\sensitive$). In addition, $p_{\immune}$ also increases when $\gamma_{\badFGE} > \gamma_{\goodFGE}$ (i.e., when recovery rates are larger for $\badFGE$ MGEs than for $\goodFGE$ MGEs), so that $\immune$ alleles are more likely to profit from $\goodFGE$ than $\badFGE$ MGEs. 
 
-\subsection{Associations between CRISPR-immune alleles and the highly beneficial MGE}
-
-As hosts with a $\immune$ allele avoid infection to $\badFGE$ MGEs with probability $1-\pi$, we would expect an association to build up between $\goodFGE$ and $\immune$, as measured by in increase in the conditional frequency $p_{\goodFGE\mid \immune}$ and a decrease in the conditional frequency $p_{\goodFGE\mid \sensitive}$. Concomitantly, as $p_{\goodFGE \mid \immune} = 1 - p_{\badFGE \mid \immune} - p_{S \mid \immune}$, associations of $\immune$ with other backgrounds than $\goodFGE$ would then decrease. 
-
-Here we ask under which conditions CRISPR-immunity alleles are more likely than sensitive alleles to become associated with the $\goodFGE$ MGE, so that $p_{\goodFGE\mid \immune}>p_{\goodFGE\mid \sensitive}$. Starting from a scenario where there is no such association ($p_{\goodFGE\mid \immune}=p_{\goodFGE\mid \sensitive}$) we thus investigate when $\mathrm{d} p_{\goodFGE\mid \immune}/ \mathrm{d} t - \mathrm{d} p_{\goodFGE\mid \sensitive}/ \mathrm{d} t> 0$. We have
+\subsection{Importance of the assocation $D$ between CRISPR immunity and the beneficial MGE}
+To illustrate the role of the assocation $D$, let us first consider a scenario where $D = 0$. Comparing terms of line 2 and 3 of equation (\ref{eq:dfcdtexpand}), we obviously have for $\pi>0$ that $(1-\pi)(1-q_{\goodFGE}) \beta_{M} < (1-q_{\goodFGE}) \beta_{M}$. Hence, whenever densities of $\immune$ and $\sensitive$ alleles are initially similar (i.e., $p_{\immune} S_{\sensitive} \approx (1-p_{\immune}) S_{\immune}$), we have
+\begin{IEEEeqnarray}{rl}
+    \frac{\mathrm{d} p_{\immune}}{\mathrm{d} t} &=  - p_{\immune}\left(1-p_{\immune}\right) k \left [q_{\goodFGE} r_{\goodFGE}  + \left ( 1 - q_{\goodFGE} \right ) r_{\badFGE}  \right ] - p_{\immune} S_{\sensitive} \pi \left ( 1 - q_{\goodFGE} \right ) \beta_{\badFGE} 
+\end{IEEEeqnarray}
+which is strictly negative. Consequently, the build-up of a positive assocation $D$ between the CRISPR allele $\immune$ and the $\goodFGE$ MGE is essential to achieve $\left . \mathrm{d} p_{\immune} \right / \mathrm{d} t > 0$.
+%
+\paragraph{Dynamics of $D$}Here we ask under which conditions CRISPR-immunity alleles are more likely than sensitive alleles to become associated with the $\goodFGE$ MGE. Starting from a scenario where there is no such association ($D=0$) we thus investigate when $\left \mathrm{d} D \right / \mathrm{d} t> 0$. We have
 \begin{IEEEeqnarray}{rl}
 \frac{\mathrm{d} p_{\goodFGE \mid \immune}}{\mathrm{d} t} &= \frac{\mathrm{d}}{\mathrm{d}t} \frac{I_{\immune\goodFGE}}{S_{\immune} + I_{\immune\badFGE} + I_{\immune\goodFGE}} \\
     &= \frac{1}{N_{\immune}} \left [ \frac{\mathrm{d} I_{\immune\goodFGE}}{\mathrm{d}t} 
@@ -347,7 +338,7 @@ We can also gain more insight by deriving an expression for the change in freque
    &
    %
    \phantom{ \underbrace{f_{\badFGE} \left( 1 - f_{\badFGE} \right) \Big [}_{\text{Genetic variation}}} \quad + \underbrace{
-      \left( S_{\immune} + S_{\sensitive} \right ) \left(\beta_{\goodFGE} - \beta_{\badFGE} \right ) - \left ( \gamma_{\goodFGE} - \gamma_{\badFGE} \right)  }_{\text{Infection minus loss of $\badFGE$ vs $G$}} \nonumber \\
+      \left( S_{\immune} + S_{\sensitive} \right ) \left(\beta_{\goodFGE} - \beta_{\badFGE} \right ) - \left ( \gamma_{\goodFGE} - \gamma_{\badFGE} \right)  }_{\text{Infection minus loss of $\badFGE$ vs $\goodFGE$}} \nonumber \\
     %
     & \phantom{ \underbrace{f_{\badFGE} \left( 1 - f_{\badFGE} \right) }_{\text{Genetic variation}}} \quad \left . + \underbrace{S_{\immune} \beta_{\badFGE} \pi}_{\text{Advantage of $\goodFGE$ due to resistance against ${\badFGE}$}} \right ],\label{eq:dfbdt}
 \end{IEEEeqnarray}
