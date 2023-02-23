@@ -116,6 +116,7 @@ Symbol & Definition\tabularnewline
     $\goodFGE$ & Highly beneficial MGE \tabularnewline
     $S_{i}$ & Density of susceptible hosts carrying allele $i \in \{\immune,\sensitive\}$ \tabularnewline
     $I_{ij}$ & Density of infected hosts carrying resistance allele $i \in \{\immune,\sensitive\}$ and infected by an MGE of type $j \in \{\badFGE,\goodFGE\}$  \tabularnewline 
+    $f_{ij}$ & frequency infected hosts carrying resistance allele $i \in \{\immune,\sensitive\}$ and infected by an MGE of type $j \in \{\badFGE,\goodFGE\}$  \tabularnewline 
     $I$ & Total density of all infected hosts, $I = \sum_{ij} I_{ij}$   \tabularnewline 
     $N$ & Total population density \tabularnewline 
             $p_{\immune}$ & Frequency of the CRISPR immune allele in infected hosts, $p_{\immune} = (I_{\immune \badFGE} + I_{\immune \goodFGE})/I$ where $p_{\sensitive} = 1-p_{\immune}$ \tabularnewline
@@ -220,134 +221,23 @@ To illustrate the role of the assocation $D$, let us first consider a scenario w
 \end{IEEEeqnarray}
 which is strictly negative. Consequently, the build-up of a positive assocation $D$ between the CRISPR allele $\immune$ and the $\goodFGE$ MGE is essential to achieve $\left . \mathrm{d} p_{\immune} \right / \mathrm{d} t > 0$.
 %
-\paragraph{Dynamics of $D$}Here we ask under which conditions CRISPR-immunity alleles are more likely than sensitive alleles to become associated with the $\goodFGE$ MGE. Starting from a scenario where there is no such association ($D=0$) we thus investigate when $\left \mathrm{d} D \right / \mathrm{d} t> 0$. We have
+\paragraph{Dynamics of $D$}Here we ask under which conditions CRISPR-immunity alleles are more likely than sensitive alleles to become associated with the $\goodFGE$ MGE. The linkage disequilibrium is given by $D = f_{\immune \goodFGE} f_{\sensitive \badFGE} - f_{\immune \badFGE} f_{\sensitive \goodFGE}$, where $f_{ij} = I_{ij} / I \pm D$. Starting from a scenario where there is no such association ($D=0$) we thus investigate when $\left \mathrm{d} D \right / \mathrm{d} t> 0$. A continuous-time equation for the change in $D$ is then given by expanding 
 \begin{IEEEeqnarray}{rl}
-\frac{\mathrm{d} p_{\goodFGE \mid \immune}}{\mathrm{d} t} &= \frac{\mathrm{d}}{\mathrm{d}t} \frac{I_{\immune\goodFGE}}{S_{\immune} + I_{\immune\badFGE} + I_{\immune\goodFGE}} \\
-    &= \frac{1}{N_{\immune}} \left [ \frac{\mathrm{d} I_{\immune\goodFGE}}{\mathrm{d}t} 
-    - p_{\goodFGE \mid \immune} \left ( \frac{\mathrm{d} S_{\immune}}{\mathrm{d}t} 
-        + \frac{\mathrm{d} I_{\immune\badFGE}}{\mathrm{d}t} 
-        + \frac{\mathrm{d} I_{\immune\goodFGE}}{\mathrm{d}t} 
-        \right )  \right ] \nonumber \\
-        %
-        %
-    \frac{\mathrm{d} p_{\goodFGE \mid \sensitive}}{\mathrm{d}t} &= \frac{\mathrm{d}}{\mathrm{d}t} \frac{I_{\sensitive\goodFGE}}{S_{\sensitive} + I_{\sensitive\badFGE}  + I_{\sensitive\goodFGE}} \\
-    &= \frac{1}{N_{\sensitive}} \left [ \frac{\mathrm{d} I_{\sensitive\goodFGE}}{\mathrm{d}t}%
-        - p_{\goodFGE \mid \sensitive} \left ( \frac{\mathrm{d} S_{\sensitive}}{\mathrm{d}t} 
-        + \frac{\mathrm{d} I_{\sensitive\badFGE}}{\mathrm{d}t} 
-        + \frac{\mathrm{d} I_{\sensitive\goodFGE}}{\mathrm{d}t} 
-        \right )
-    \right ] \nonumber\\
-%    &= p_{\goodFGE \mid \sensitive} \left [\left(1 - p_{\goodFGE \mid \sensitive} \right )r_{\goodFGE} - p_{\badFGE \mid \sensitive}r_{\badFGE} - p_{S \mid \sensitive} r_{S} - \gamma_{\goodFGE} \right ] + p_{S \mid \sensitive} \beta_{\goodFGE} I_{\goodFGE} \label{eq:dpGpdt} \\
+\frac{\mathrm{d} D}{\mathrm{d} t} &= 
+    \frac{\mathrm{d}}{\mathrm{d}t} \left (\frac{I_{\immune\goodFGE}}{I} \right ) f_{\sensitive \badFGE} %
+    + \frac{\mathrm{d}}{\mathrm{d}t} \left (\frac{I_{\sensitive \badFGE}}{I} \right ) f_{\immune\goodFGE} %
+    - \frac{\mathrm{d}}{\mathrm{d}t} \left (\frac{I_{\immune \badFGE}}{I} \right ) f_{\sensitive \goodFGE} %
+    - \frac{\mathrm{d}}{\mathrm{d}t} \left (\frac{I_{\sensitive \goodFGE}}{I} \right ) f_{\immune \badFGE},
+\end{IEEEeqnarray}
+but the resulting expression is long and uninformative. However, when assuming that we initially start at $D = 0$, the frequencies of infected individuals $f_{ij}$ carrying resistance allele $i$ and infected by an MGE of type $j$ become $f_{ij} = p_{i} q_{j}$. The resulting expression becomes
+\begin{IEEEeqnarray}{rl}
+    \left . \frac{\mathrm{d} D}{\mathrm{d} t} \right |_{D = 0} &= \left ( 1 - q_{\goodFGE} \right ) q_{\goodFGE} \left [ - \left ( 1 - p_{\immune} \right ) p_{\immune} k \left ( r_{\goodFGE} - r_{\badFGE} \right ) \right . \nonumber \\
     %
-%    &= p_{\goodFGE \mid \immune} \left[ \left ( 1 - p_{\goodFGE \mid \immune} \right ) r_{\goodFGE} \left( \pi \right ) - p_{S \mid \immune} r_{S} \left( \pi \right ) - p_{\badFGE \mid \immune} r_{\badFGE} \left( \pi \right) - \gamma_{\goodFGE}  \right ] + p_{S \mid \immune} \beta_{\goodFGE} I_{\goodFGE} \label{eq:dpGcdt}.
-    \frac{\mathrm{d} p_{\goodFGE \mid \immune}}{\mathrm{d}t} - \frac{\mathrm{d} p_{\goodFGE \mid \sensitive}}{\mathrm{d}t} &= p_{\goodFGE \mid \immune} \left [ 
-        r_{\badFGE} \left ( p_{\badFGE \mid \sensitive} - p_{\badFGE \mid \immune}  \left( 1 - k \right ) \right ) + r_{S} \left (p_{S \mid \sensitive} - p_{S \mid \immune} \left ( 1 - k \right ) \right )
-    \right . \nonumber \\
-        & \phantom{p_{\goodFGE \mid \immune} \quad} - r_{\goodFGE} k \left ( 1 - p_{\goodFGE \mid \immune} \right ) + \left ( p_{S \mid \immune} - p_{S \mid \sensitive} \right ) N \beta_{\goodFGE} \left . \right ]\label{eq:dpGcdtMinusdpGpdt},
-\end{IEEEeqnarray} where terms on the first line reflect an increase in the association between $\immune$ and $\goodFGE$ either because (i) $\badFGE$ or $S$ backgrounds are more likely to carry the $\sensitive$ allele than the $\immune$ allele (reflected by $p_{\badFGE\mid \sensitive} r_{\badFGE} + p_{S \mid \sensitive} r_{S}$) or (ii) due to costs of immunity that affect $\immune$ alleles in $\badFGE$ or $S$ backgrounds. The terms on the second line reflect (iii) the cost of immunity that the $\immune$ allele incurs in a $\goodFGE$ background and (iv) the increase in $p_{\goodFGE|\immune}$ due to infections by $\goodFGE$ in case there are more susceptible hosts that carry a $\immune$ allele than a $\sensitive$ allele.
-
-Equation (\ref{eq:dpGcdtMinusdpGpdt}) shows that any buildup of $p_{\goodFGE \mid \immune}$ is the result of other associations (as measured by $p_{S \mid \immune}$ vs $p_{\badFGE \mid \immune}$ and $p_{\badFGE\mid \immune}$ vs $p_{\badFGE \mid \sensitive}$. Indeed, if associations are absent in the evolution of $p_{\goodFGE \mid \immune}$ by setting $p_{\badFGE\mid \immune} = p_{\badFGE \mid \sensitive}$ and $p_{S \mid \immune} = p_{\badFGE \mid \immune}$ (note that we previously set $p_{\goodFGE \mid \immune} = p_{\goodFGE \mid \sensitive}$ to develop eq. (\ref{eq:dpGcdtMinusdpGpdt})), we have (note that $1 - p_{\goodFGE \mid \immune} = p_{\badFGE \mid \immune} + p_{S \mid \immune}$), we obtain
-\begin{IEEEeqnarray}{rl}
- \frac{\mathrm{d} p_{\goodFGE \mid \immune}}{\mathrm{d}t} - \frac{\mathrm{d} p_{\goodFGE \mid \sensitive}}{\mathrm{d}t} &= k p_{\goodFGE \mid \immune} \left [
-    p_{\badFGE \mid \immune} r_{\badFGE} + p_{S \mid \immune } r_{S} - \left ( 1 - p_{\goodFGE \mid \immune} \right ) r_{\goodFGE} 
- \right ] \nonumber \\
- &= k p_{\goodFGE \mid \immune} \left [
-    p_{\badFGE \mid \immune} \left (r_{\badFGE} - r_{\goodFGE} \right ) + p_{S \mid \immune } \left( r_{S} - r_{\goodFGE} \right )
- \right ], \label{eq:dpGcdtMinusdpGpdtNoAssoc}
-\end{IEEEeqnarray}
- which is strictly negative when $r_{\badFGE} < r_{\goodFGE}$ and $r_{S} < r_{\goodFGE}$. We thus conclude from eq. (\ref{eq:dpGcdtMinusdpGpdt}) that the buildup of an association $p_{\goodFGE \mid \immune}$ between $\goodFGE$ and $\immune$ is only possible when associations $p_{\badFGE \mid \sensitive}$ between $\badFGE$ and $\sensitive$ and also $p_{S \mid \immune}$ between $S$ and $\immune$ already exist. Note also that the association $p_{S \mid \immune}$ has both a negative and a positive effects on the buildup of $p_{\goodFGE \mid \immune}$, as shown by the second and fourth term in eq. (\ref{eq:dpGcdtMinusdpGpdt}). However, the positive effect of the association $p_{S \mid \immune}$ on the buildup of $p_{\goodFGE \mid \immune}$ is expected to prevail as $N \beta_{\goodFGE}$ is likely to be of a larger magnitude than the susceptible growth rate $r_{\goodFGE}$.
- 
-
-\subsection{Associations between immunity and other backgrounds}
-
-Equation (\ref{eq:dpGcdtMinusdpGpdt}) shows that the association $p_{\goodFGE \mid \immune}$ between $\goodFGE$ and $\immune$  will only increase when $p_{S \mid \immune} > p_{S \mid \sensitive}$ and when  $p_{\badFGE \mid \sensitive} > p_{\badFGE \mid \immune}$. Here, we thus explore the buildup of the other associations $p_{S \mid \immune}$ vs $p_{S \mid \sensitive}$ and  $p_{\badFGE \mid \immune}$ vs $p_{\badFGE \mid \immune}$. 
-
-\subsubsection{The association between immunity and susceptibility always increases}
-First, we assess the evolution of the conditional frequency $p_{S\mid \immune}$, which measures the association between $S$ and $\immune$. To this end, we consider the dynamic $\mathrm{d} p_{S\mid \immune}/ \mathrm{d} t - \mathrm{d} p_{S\mid \sensitive}/ \mathrm{d} t$. We start from a scenario where there are no associations between either allele or background  ($p_{S \mid \immune} = p_{S \mid \sensitive}$, $p_{\badFGE \mid \immune} = p_{\badFGE \mid \sensitive}$ and $p_{\goodFGE \mid \immune} = p_{\goodFGE \mid \sensitive}$). While eq. (\ref{eq:dpGcdtMinusdpGpdtNoAssoc}) showed that the association $p_{\goodFGE \mid \immune}$ always decreases in the absence of any pre-existing associations, the equations below show that the same does not apply for the buildup of the association between $p_{S \mid \immune}$ and $p_{\badFGE \mid \immune}$.
-We have
-\begin{IEEEeqnarray}{rl}
-    \frac{\mathrm{d} p_{S \mid \immune}}{\mathrm{d}t} - \frac{\mathrm{d} p_{S \mid \sensitive}}{\mathrm{d}t} &= 
-    \frac{1}{N_{\immune}} \left [ \frac{\mathrm{d} S_{\immune}}{\mathrm{d}t} - p_{S \mid \immune } \left ( \frac{\mathrm{d} S_{\immune}}{\mathrm{d}t} 
-        + \frac{\mathrm{d} I_{\immune\badFGE}}{\mathrm{d}t} 
-        + \frac{\mathrm{d} I_{\immune\goodFGE}}{\mathrm{d}t} 
-        \right )  \right ] \nonumber \\
-    &- \frac{1}{N_{\sensitive}} \left [ \frac{\mathrm{d} S_{\sensitive}}{\mathrm{d}t}  - p_{S \mid \sensitive } \left ( \frac{\mathrm{d} S_{\sensitive}}{\mathrm{d}t} 
-        + \frac{\mathrm{d} I_{\sensitive\badFGE}}{\mathrm{d}t} 
-        + \frac{\mathrm{d} I_{\sensitive\goodFGE}}{\mathrm{d}t} 
-        \right )   \right ] \\
-    &= p_{S \mid \immune}  k \left [ \left ( 1 - p_{S \mid \immune}\right ) \left ( r_{\goodFGE} - r_{S} \right ) - p_{\badFGE \mid \immune} \left ( r_{\goodFGE} - r_{\badFGE} \right )   \right ] +  p_{S \mid \immune} p_{\badFGE \mid \sensitive} \pi N \beta_{\badFGE} \nonumber \\
-    &= p_{S \mid \immune}  k \left [ p_{\badFGE \mid \immune} \left ( r_{\badFGE} - r_{S} \right )+ p_{\goodFGE \mid \immune} \left ( r_{\goodFGE} - r_{S} \right ) \right ] +  p_{S \mid \immune} p_{\badFGE \mid \sensitive} \pi N \beta_{\badFGE}, \label{eq:dpScMinusdpSp}
- %   &= p_{S \mid \immune}  \left \{
-  %      k 
-  %      \left [ r_{\badFGE} p_{\badFGE \mid \sensitive}
-  %              + r_{\goodFGE}  p_{\goodFGE \mid \immune}
-  %          - r_{S}  \left ( 1 - p_{S \mid \immune} \right ) 
-  %          \right ] %
-  %      + \pi p_{\badFGE \mid \immune} N \beta_{\badFGE}
-  %  \right \} \nonumber \\
-  %  &+ \left ( p_{\badFGE \mid \sensitive} - p_{\badFGE \mid \immune} \right ) \left [
-  %      r_{\badFGE} \left ( p_{S \mid \immune} - p_{\badFGE \mid \sensitive} \right )
-  %      - r_{\goodFGE} p_{\goodFGE \mid \immune}
-  %      - r_{S} p_{S \mid \immune}
-  %      - \gamma_{\badFGE}
-  %      + \pi N \beta_{\badFGE} p_{S \mid \immune} \left ( 1 - q_{\immune} \right )  
-  %  \right ]
-\end{IEEEeqnarray}
-where the final expression is obtained by exploiting $p_{S \mid \immune} = 1 - p_{\goodFGE \mid \immune} - p_{\badFGE \mid \immune}$. The term within square brackets reflects the relative cost of immunity of a $\immune$ allele in an $S$ background, relative to that of $\immune$ alleles in other backgrounds. This term is positive, implying that all other backgrounds suffer larger costs of immunity than the $S$ background. This makes sense, because the $S$ background has the slowest growth rate  ($r_{\goodFGE} > r_{\badFGE} > r_{S}$), and hence when costs are expressed as a fraction $k$ of the growth rate, the association between $\immune$ and $S$ builds up as it suffers the lowest costs of immunity. 
-
-Next, the last term reflects the growth of an association between $\immune$ and $S$, because immune, uninfected hosts are more likely to remain uninfected than sensitive hosts by resisting infections by $\badFGE$ with probability $\pi$. Consequently, eq. (\ref{eq:dpScMinusdpSp}) is positive and we expect an association between $S$ and $\immune$, as measured by $p_{S \mid \immune}$, to build up invariably. 
-
-\subsubsection{The association between immunity and bad MGEs typically decreases}
-Next, we assess the evolution of the association $p_{\badFGE\mid \immune}$ between $\badFGE$ and $\immune$ vs the association $p_{\badFGE \mid \sensitive}$ between $\badFGE$ and $\sensitive$. To this end, we consider the dynamic $\mathrm{d} p_{\badFGE\mid \immune}/ \mathrm{d} t - \mathrm{d} p_{\badFGE\mid \sensitive}/ \mathrm{d} t$ when starting from a scenario where there is neither an  association between $S$ and $\immune$ or $\badFGE$ and $\immune$ ($p_{S \mid \immune} = p_{S \mid \sensitive}$, $p_{\badFGE \mid \immune} = p_{\badFGE \mid \sensitive}$).
-\begin{IEEEeqnarray}{rl}
-    \frac{\mathrm{d} p_{\badFGE \mid \immune}}{\mathrm{d}t} - \frac{\mathrm{d} p_{\badFGE \mid \sensitive}}{\mathrm{d}t} &= 
-    \frac{1}{N_{\immune}} \left [ \frac{\mathrm{d} I_{\immune\badFGE}}{\mathrm{d}t} - p_{\badFGE \mid \immune} \left ( \frac{\mathrm{d} I_{\immune\badFGE}}{\mathrm{d}t}  + \frac{\mathrm{d} I_{\immune\goodFGE}}{\mathrm{d}t} + \frac{\mathrm{d} S_{\immune}}{\mathrm{d}t}  \right ) \right ]\nonumber \\
-    &-  \frac{1}{N_{\sensitive}} \left [ \frac{\mathrm{d} I_{\sensitive\badFGE}}{\mathrm{d}t} - p_{\badFGE \mid \sensitive} \left ( \frac{\mathrm{d} I_{\sensitive\badFGE}}{\mathrm{d}t}  + \frac{\mathrm{d} I_{\sensitive\goodFGE}}{\mathrm{d}t} + \frac{\mathrm{d} S_{\sensitive}}{\mathrm{d}t}  \right ) \right ] \\
-    &= p_{\badFGE \mid \immune} k \left [ p_{\goodFGE \mid \immune} \left ( r_{\goodFGE} - r_{\badFGE} \right ) - p_{S \mid \immune} \left ( r_{\badFGE} - r_{S} \right ) \right ] - p_{S \mid \immune} p_{\badFGE \mid \sensitive} \pi N \beta_{\badFGE}. \label{eq:dpBcdtMinusdpBpdt}
-\end{IEEEeqnarray}
-Similar to eq. (\ref{eq:dpScMinusdpSp}), the term within square brackets reflects how the association $p_{\badFGE \mid \immune}$ vs $p_{\badFGE \mid \sensitive}$ is affected by costs of immunity across the various backgrounds (again, measured by a fraction $k$ of the background-specific growth rate $r$).
-The first term in square brackets is positive, as a $\immune$ allele in a $\badFGE$ background suffers a smaller total cost of immunity than $\immune$ alleles in a $\goodFGE$ background (as $kr_{\badFGE} < kr_{\goodFGE}$). 
-Conversely, the second term in square brackets is negative, as a $\immune$ allele in a $\badFGE$ background suffers a larger total cost of immunity than $\immune$ alleles in a $S$ background, as $kr_{\badFGE}>kr_{S}$. Consequently, when chiefly focusing on costs of immunity alone, the differences in the rates of growth $r_{\goodFGE}$, $r_{\badFGE}$ and $r_{S}$ determine whether $\immune$ or $\sensitive$ is more likely to associate with $\badFGE$.
-
-Most importantly, however, the final term in (\ref{eq:dpBcdtMinusdpBpdt}) measures the build up of an association between $\badFGE$ and $\immune$ due to infection. This term is strictly negative, as the expression of resistance by $\immune$ susceptibles decreases the association between $\immune$ and $\badFGE$, so that $\badFGE$ is more likely to co-occur in sensitive hosts that have the $\sensitive$ allele.
-
-
-
-\begin{figure}
-\internallinenumbers
-\hypertarget{fig:associations}{%
-\centering
-\includegraphics[scale=0.6]{img/associations_fb1.pdf}
-\caption{The evolution of the CRISPR immune allele $\immune$ by hitch hiking with the $\goodFGE$ MGE. \textbf{Panels A - \badFGE}: buildup of the associations between $\immune$ and $\goodFGE$ as measured by $p_{\goodFGE \mid \immune} - p_{\goodFGE \mid \sensitive}$ (see eq. [\ref{eq:dpGcdtMinusdpGpdt}]), between $\immune$ and $S$ as measured by $p_{S \mid \immune} - p_{S \mid \sensitive}$ (see eq. [\ref{eq:dpScMinusdpSp}]) and between $\immune$ and $\badFGE$ as measured by $p_{\badFGE \mid \immune} - p_{\badFGE \mid \sensitive}$ (see eq. [\ref{eq:dpBcdtMinusdpBpdt}]). We see that $p_{\badFGE \mid \immune} - p_{\badFGE \mid \sensitive}$ immediately becomes negative (dark blue lines), as resistance $\pi$ ensures that $\immune$ alleles are less likely to reside in hosts infected by $\badFGE$ than $\sensitive$ alleles are. By contrast, $p_{S \mid \immune} - p_{S \mid \sensitive}$ becomes positive (green lines) because $\immune$ hosts are more likely to remain susceptible than $\sensitive$ hosts (see \ref{eq:dpScMinusdpSp}), as $\immune$ will forego on (most) infections by $\goodFGE$, whereas $\sensitive$ hosts are susceptible to both $\badFGE$ and $\goodFGE$ and are thus more quickly removed from the susceptible population. Once associations between $S$ and $\immune$ and between $\badFGE$ and $\sensitive$ has been built up, the resulting association between $\goodFGE$ and $\immune$ also starts to increase, giving rise to hitch hiking between $\immune$ and $\goodFGE$ due to the higher growth rate of $\goodFGE$. \textbf{panels C - D}: different components of $\mathrm{d}q_{\immune} / \mathrm{d}t$ in eq. \eqref{eq:dfcdtexpand} that reflect the hitch hiking effect of $\immune$, where $\badFGE = r_{\badFGE} \left ( p_{\badFGE \mid \immune}(1-k) - p_{\badFGE \mid \sensitive} \right )$, $\goodFGE = r_{\goodFGE} \left ( p_{\goodFGE \mid \immune}(1-k) - p_{\goodFGE \mid \sensitive} \right )$ and $S = \left( p_{S \mid \immune}(1-k) - p_{S \mid \sensitive} \right )$. \textbf{Panels E - F}: initial evolution of the immunity allele $\immune$. Parameters as in Figure 1.}
-\label{fig:associations} 
-}
-\end{figure}
-
- \begin{comment}
-\section{Evolutionary dynamics of bad vs good plasmids}
-
-
-
-We can also gain more insight by deriving an expression for the change in frequency $f_{\goodFGE}= \left(I_{\immune\goodFGE} +I_{\sensitive\goodFGE} \right)/I$ of the good MGE, which is given by
-\begin{IEEEeqnarray}{rl}
-    \frac{\mathrm{d}f_{\goodFGE}}{\mathrm{d}t}  &=\frac{1}{I}\left[\frac{\mathrm{d}I_{\sensitive\goodFGE}}{\mathrm{d}t}+\frac{\mathrm{d}I_{\immune\goodFGE}}{\mathrm{d}t}-f_{\goodFGE}\frac{\mathrm{d}I}{\mathrm{d}t}\right] \nonumber \\
+        & + p_{\immune} S_{\sensitive} \left( \beta_{\badFGE} - \beta_{\goodFGE} \right ) \nonumber \\
     %
- & = \underbrace{f_{\goodFGE} \left( 1 - f_{\goodFGE} \right) }_{\text{Genetic variation}}
-  \left [
-   \underbrace{ r_{\goodFGE} - r_{\badFGE}}_{\text{Vertical transmission}} \right . \nonumber \\
-   &
-   %
-   \phantom{ \underbrace{f_{\badFGE} \left( 1 - f_{\badFGE} \right) \Big [}_{\text{Genetic variation}}} \quad + \underbrace{
-      \left( S_{\immune} + S_{\sensitive} \right ) \left(\beta_{\goodFGE} - \beta_{\badFGE} \right ) - \left ( \gamma_{\goodFGE} - \gamma_{\badFGE} \right)  }_{\text{Infection minus loss of $\badFGE$ vs $\goodFGE$}} \nonumber \\
-    %
-    & \phantom{ \underbrace{f_{\badFGE} \left( 1 - f_{\badFGE} \right) }_{\text{Genetic variation}}} \quad \left . + \underbrace{S_{\immune} \beta_{\badFGE} \pi}_{\text{Advantage of $\goodFGE$ due to resistance against ${\badFGE}$}} \right ],\label{eq:dfbdt}
+        & \left . + \left ( 1 - p_{\immune} \right ) S_{\immune} \left( \beta_{\goodFGE} - \left ( 1 - \pi \right ) \beta_{\badFGE} \right ) \right ]
+    \right ],
 \end{IEEEeqnarray}
-where $r_{\badFGE} = \left( 1 - f_{\immune \mid \badFGE} \right ) r_{\badFGE} \left( 0 \right ) + f_{\immune \mid \badFGE} r_{\badFGE} \left( \pi_{\goodFGE} \right ) $ and $r_{\goodFGE} = \left( 1 - f_{\immune \mid \goodFGE} \right ) r_{\goodFGE} \left (  0 \right ) + f_{\immune \mid \goodFGE} r_{\goodFGE} \left( \pi_{\goodFGE} \right ) $. Here, $f_{\immune\mid \badFGE} = I_{\immune\badFGE} / \left ( I_{\immune\badFGE} + I_{\sensitive\badFGE} \right )$ and $f_{\sensitive\mid \badFGE} = 1 - f_{\immune\mid \badFGE} $ are the conditional frequencies of hosts carrying the immunity allele and the sensitive allele respectively, given that these hosts are infected with $\badFGE$ MGEs.  
-
-The expression in eq. (\ref{eq:dfbdt}) shows that any increase in frequency of the $\badFGE$ MGE is either the result of a greater success at vertical transmission (first line),  horizontal transmission (second line) or due to the competitive advantage the $\badFGE$ MGE enjoys as a result of resistance $\pi_{\goodFGE}$ disfavouring infections with the $\goodFGE$ MGE (third line). 
-
-\end{comment}
-
-
+where the first line reflects a decrease in the association between $\goodFGE$ and $\immune$ because of the costs $k$ of bearing the CRISPR immune allele. The second line reflects an increase in the association because sensitive $\sensitive$ hosts become infected by $\badFGE$ MGEs, rather than by $\goodFGE$ MGEs. Finally, the third line reflects an increase in the association due to infections of $\immune$ hosts by $\goodFGE$ MGEs, relative to $\badFGE$ MGEs. 
 \bibliography{refs}
 \end{document}
